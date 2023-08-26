@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 namespace NetworkTanks
 {
@@ -123,6 +124,26 @@ namespace NetworkTanks
             }
         }
 
+        /// <summary>
+        /// Обновить поворот мешей в зависимости от вращения
+        /// </summary>
+        /// <param name="rpm">Вращение</param>
+        public void UpdateMeshRotationByRpm(float rpm)
+        {
+            float angle = rpm * 360.0f / 60.0f * Time.fixedDeltaTime;
+
+            for (int i = 0; i < meshs.Length; i++)
+            {
+                Vector3 position;
+                Quaternion rotation;
+
+                colliders[i].GetWorldPose(out position, out rotation);
+
+                meshs[i].position = position;
+                meshs[i].Rotate(angle, 0, 0);
+            }
+        }
+
         #endregion
     }
 
@@ -220,6 +241,8 @@ namespace NetworkTanks
         public float RightWheelRpm => rightWheelRow.MinRpm;
 
 
+        #region Unity Events
+
         private void Start()
         {
             rigidbody = GetComponent<Rigidbody>();
@@ -227,6 +250,45 @@ namespace NetworkTanks
         }
 
         private void FixedUpdate()
+        {
+            if (isOwned)
+            {
+                UpdateMotorTorque();
+
+                CmdUpdateWheelRpm(LeftWheelRpm, RightWheelRpm);
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Обновить вращение колёс
+        /// </summary>
+        /// <param name="leftRpm">Левый ряд</param>
+        /// <param name="rightRpm">Правый ряд</param>
+        [Command]
+        private void CmdUpdateWheelRpm(float leftRpm, float rightRpm)
+        {
+            SvUpdateWheelRpm(leftRpm, rightRpm);
+        }
+        [Server]
+        private void SvUpdateWheelRpm(float leftRpm, float rightRpm)
+        {
+            RpcUpdateWheelRpm(leftRpm, rightRpm);
+        }
+        [ClientRpc(includeOwner = false)]
+        private void RpcUpdateWheelRpm(float leftRpm, float rightRpm)
+        {
+            leftWheelRow.MinRpm = leftRpm;
+            rightWheelRow.MinRpm = rightRpm;
+
+            leftWheelRow.UpdateMeshRotationByRpm(leftRpm);
+            rightWheelRow.UpdateMeshRotationByRpm(rightRpm);
+        }
+
+
+        private void UpdateMotorTorque()
         {
             float targetMotorTorque = targetInputControl.z > 0 ? maxForwardTorque * Mathf.RoundToInt(targetInputControl.z) : maxBackwardTorque * Mathf.RoundToInt(targetInputControl.z);
             float brakeTorque = this.brakeTorque * targetInputControl.y;

@@ -9,10 +9,12 @@ namespace NetworkTanks
     /// </summary>
     public class VehicleCamera : MonoBehaviour
     {
+        public static VehicleCamera Instance;
+
         /// <summary>
         /// Цель слежения камеры
         /// </summary>
-        [SerializeField] private Vehicle target;
+        [SerializeField] private Vehicle vehicle;
         /// <summary>
         /// Смещение камеры
         /// </summary>
@@ -114,18 +116,28 @@ namespace NetworkTanks
 
         #region Unity Events
 
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+        }
+
         private void Start()
         {
             camera = GetComponent<Camera>();
             defaultFOV = camera.fieldOfView;
             defaultMaxVerticalAngle = maxVerticalAngle;
-
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()
         {
+            if (vehicle == null) return;
+
             UpdateControl();
 
             distance = Mathf.Clamp(distance, minDistance, maxDistance);
@@ -137,18 +149,18 @@ namespace NetworkTanks
             deltaRotationY = ClampAngle(deltaRotationY, minVerticalAngle, maxVerticalAngle);
 
             Quaternion finalRotation = Quaternion.Euler(deltaRotationY, deltaRotationX, 0);
-            Vector3 finalPosition = target.transform.position - (finalRotation * Vector3.forward * distance);
+            Vector3 finalPosition = vehicle.transform.position - (finalRotation * Vector3.forward * distance);
             finalPosition = AddLocalOffset(finalPosition);
 
             // Расчёт дистанции
             float targetDistance = distance;
 
             RaycastHit hit;
-            if (Physics.Linecast(target.transform.position + new Vector3(0, offset.y, 0), finalPosition, out hit))
+            if (Physics.Linecast(vehicle.transform.position + new Vector3(0, offset.y, 0), finalPosition, out hit))
             {
-                float distanceToHit = Vector3.Distance(target.transform.position + new Vector3(0, offset.y, 0), hit.point);
+                float distanceToHit = Vector3.Distance(vehicle.transform.position + new Vector3(0, offset.y, 0), hit.point);
 
-                if (hit.transform != target)
+                if (hit.transform != vehicle)
                 {
                     if (distanceToHit < distance)
                     {
@@ -161,7 +173,7 @@ namespace NetworkTanks
             currentDistance = Mathf.Clamp(currentDistance, minDistance, distance);
 
             // Корректировка позиции камеры
-            finalPosition = target.transform.position - (finalRotation * Vector3.forward * currentDistance);
+            finalPosition = vehicle.transform.position - (finalRotation * Vector3.forward * currentDistance);
 
             //Применение трансформы
             transform.rotation = finalRotation;
@@ -173,7 +185,7 @@ namespace NetworkTanks
 
             if (isZoom)
             {
-                transform.position = target.ZoomOpticalPosition.position;
+                transform.position = vehicle.ZoomOpticalPosition.position;
                 camera.fieldOfView = zoomedFOV;
                 maxVerticalAngle = zoomedMaxVerticalAngle;
             }
@@ -220,7 +232,7 @@ namespace NetworkTanks
         /// <param name="target">Цель</param>
         public void SetTarget(Vehicle vehicle)
         {
-            target = vehicle;
+            this.vehicle = vehicle;
         }
 
         #endregion

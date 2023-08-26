@@ -5,7 +5,7 @@ namespace NetworkTanks
     /// <summary>
     /// Транспорт
     /// </summary>
-    public class Vehicle : MonoBehaviour
+    public class Vehicle : Destructible
     {
         /// <summary>
         /// Максимальная скорость
