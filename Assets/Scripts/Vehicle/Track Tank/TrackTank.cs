@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace NetworkTanks
 {
@@ -17,6 +18,11 @@ namespace NetworkTanks
         /// Меши колёс
         /// </summary>
         [SerializeField] private Transform[] meshs;
+
+        /// <summary>
+        /// Минимальное вращение колёсного ряда
+        /// </summary>
+        public float MinRpm;
 
         
         #region Public
@@ -79,6 +85,32 @@ namespace NetworkTanks
         /// </summary>
         public void UpdateMeshTransform()
         {
+            // Поиск минимального вращения колёсного ряда
+            List<float> allRpm = new List<float>();
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].isGrounded)
+                {
+                    allRpm.Add(colliders[i].rpm);
+                }
+            }
+
+            if (allRpm.Count > 0)
+            {
+                MinRpm = Mathf.Abs(allRpm[0]);
+                for (int i = 0; i < allRpm.Count; i++)
+                {
+                    if (MinRpm > Mathf.Abs(allRpm[i]))
+                    {
+                        MinRpm = Mathf.Abs(allRpm[i]);
+                    }
+                }
+                MinRpm *= Mathf.Sign(allRpm[0]);
+            }
+
+            float angle = MinRpm * 360.0f / 60.0f * Time.fixedDeltaTime;
+
             for (int i = 0; i < meshs.Length; i++)
             {
                 Vector3 position;
@@ -87,7 +119,7 @@ namespace NetworkTanks
                 colliders[i].GetWorldPose(out position, out rotation);
 
                 meshs[i].position = position;
-                meshs[i].rotation = rotation;
+                meshs[i].Rotate(angle, 0, 0);
             }
         }
 
@@ -178,6 +210,15 @@ namespace NetworkTanks
         /// </summary>
         [SerializeField] private float currentMotorTorque;
 
+        /// <summary>
+        /// Минимальное вращение левого колёсного ряда
+        /// </summary>
+        public float LeftWheelRpm => leftWheelRow.MinRpm;
+        /// <summary>
+        /// Минимальное вращение правого колёсного ряда
+        /// </summary>
+        public float RightWheelRpm => rightWheelRow.MinRpm;
+
 
         private void Start()
         {
@@ -225,7 +266,7 @@ namespace NetworkTanks
             // Поворот на месте
             if (targetMotorTorque == 0 && steering != 0)
             {
-                if (LinearVelocity < 0.5f)
+                if (Mathf.Abs(leftWheelRow.MinRpm) < 1 || Mathf.Abs(rightWheelRow.MinRpm) < 1)
                 {
                     leftWheelRow.SetTorque(rotateTorqueInPlace);
                     rightWheelRow.SetTorque(rotateTorqueInPlace);
@@ -256,12 +297,12 @@ namespace NetworkTanks
                 {
                     if (LinearVelocity < maxLinearVelocity)
                     {
-                        leftWheelRow.SetTorque(targetMotorTorque);
-                        rightWheelRow.SetTorque(targetMotorTorque);
+                        leftWheelRow.SetTorque(currentMotorTorque);
+                        rightWheelRow.SetTorque(currentMotorTorque);
                     }
                 }
 
-                if (LinearVelocity < 0.5f)
+                if (steering != 0 && (Mathf.Abs(leftWheelRow.MinRpm) < 1 || Mathf.Abs(rightWheelRow.MinRpm) < 1))
                 {
                     leftWheelRow.SetTorque(rotateTorqueInMotion);
                     rightWheelRow.SetTorque(rotateTorqueInMotion);

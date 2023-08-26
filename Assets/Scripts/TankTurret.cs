@@ -45,22 +45,74 @@ namespace NetworkTanks
         /// Максимальный угол опускания
         /// </summary>
         [SerializeField] private float maxBottomAngle;
+        
+        [Header("SFX")]
+        /// <summary>
+        /// Звук выстрела
+        /// </summary>
+        [SerializeField] private AudioSource fireSound;
+        /// <summary>
+        /// Вспышка
+        /// </summary>
+        [SerializeField] private ParticleSystem muzzle;
+        /// <summary>
+        /// Отбрасывающая сила
+        /// </summary>
+        [SerializeField] private float forceRecoil;
 
         /// <summary>
         /// Текущий угол поворота башни
         /// </summary>
         private float maskCurrentAngle;
 
+        /// <summary>
+        /// Ригид танка
+        /// </summary>
+        private Rigidbody tankRigidbody;
+
+
+        #region Unity Events
 
         private void Start()
         {
             tank = GetComponent<TrackTank>();
+            tankRigidbody = tank.GetComponent<Rigidbody>();
+
             maxTopAngle = -maxTopAngle;
         }
 
         private void Update()
         {
+            // Temp
+            if (Input.GetMouseButtonDown(0))
+            {
+                Fire();
+            }
+
             ControlTurretAim();
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Выстрел
+        /// </summary>
+        public void Fire()
+        {
+            FireSfx();
+        }
+
+
+        /// <summary>
+        /// Эффект от выстрела
+        /// </summary>
+        private void FireSfx()
+        {
+            fireSound.Play();
+            muzzle.Play();
+
+            tankRigidbody.AddForceAtPosition(-mask.forward * forceRecoil, mask.position, ForceMode.Impulse);
         }
 
         /// <summary>
