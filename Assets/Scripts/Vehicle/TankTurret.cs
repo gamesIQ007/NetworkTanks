@@ -7,17 +7,12 @@ namespace NetworkTanks
     /// <summary>
     /// Турель танка
     /// </summary>
-    public class TankTurret : MonoBehaviour
+    public class TankTurret : Turret
     {
         /// <summary>
         /// Танк
         /// </summary>
         private TrackTank tank;
-
-        /// <summary>
-        /// Прицел
-        /// </summary>
-        [SerializeField] private Transform aim;
 
         /// <summary>
         /// Башня
@@ -81,13 +76,9 @@ namespace NetworkTanks
             maxTopAngle = -maxTopAngle;
         }
 
-        private void Update()
+        protected override void Update()
         {
-            // Temp
-            if (Input.GetMouseButtonDown(0))
-            {
-                Fire();
-            }
+            base.Update();
 
             ControlTurretAim();
         }
@@ -95,11 +86,14 @@ namespace NetworkTanks
         #endregion
 
 
-        /// <summary>
-        /// Выстрел
-        /// </summary>
-        public void Fire()
+        protected override void OnFire()
         {
+            base.OnFire();
+
+            GameObject projectile = Instantiate(projectilePrefab.gameObject);
+            projectile.transform.position = launchPoint.position;
+            projectile.transform.forward = launchPoint.forward;
+
             FireSfx();
         }
 
@@ -121,7 +115,7 @@ namespace NetworkTanks
         private void ControlTurretAim()
         {
             // Башня
-            Vector3 localPosition = tower.InverseTransformPoint(aim.position);
+            Vector3 localPosition = tower.InverseTransformPoint(tank.NetAimPoint);
             localPosition.y = 0;
             Vector3 globalPosition = tower.TransformPoint(localPosition);
             tower.rotation = Quaternion.RotateTowards(tower.rotation, Quaternion.LookRotation((globalPosition - tower.position).normalized, tower.up), horizontalRotationSpeed * Time.deltaTime);
@@ -129,7 +123,7 @@ namespace NetworkTanks
             // Маска
             mask.localRotation = Quaternion.identity;
 
-            localPosition = mask.InverseTransformPoint(aim.position);
+            localPosition = mask.InverseTransformPoint(tank.NetAimPoint);
             localPosition.x = 0;
             globalPosition = mask.TransformPoint(localPosition);
 

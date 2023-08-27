@@ -1555,13 +1555,14 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  m_MaxHitPoint: 0
+  m_MaxHitPoint: 480
   m_DestroySFX: {fileID: 0}
   Owner: {fileID: 0}
   maxLinearVelocity: 30
   engineSound: {fileID: 5664297181969350634}
   enginePitchModifier: 1
   zoomOpticalPosition: {fileID: 5664297181098447642}
+  Turret: {fileID: 4781355605197135618}
   centerOfMass: {fileID: 5664297181520133670}
   leftWheelRow:
     colliders:
@@ -1726,7 +1727,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58218701f40876a44ad081d6d322b010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aim: {fileID: 3026208793989998893}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  launchPoint: {fileID: 644824028157615025}
+  fireRate: 5
+  projectilePrefab: {fileID: 6964444681288744867, guid: cf5acdbb4ebcb6849b317b6accf9d071, type: 3}
+  ammoCount: 20
   tower: {fileID: 2577048890635906183}
   mask: {fileID: 5386745746462615322}
   horizontalRotationSpeed: 30
@@ -2080,7 +2087,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5664297181098447643}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.25, z: 0}
+  m_LocalPosition: {x: 0, y: 2.24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3510,6 +3517,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5662404659005182546}
+  - {fileID: 644824028157615025}
   m_Father: {fileID: 5386745746462615322}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4441,6 +4449,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6231150463631648910}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8202588566930618615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 644824028157615025}
+  m_Layer: 0
+  m_Name: LaunchPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &644824028157615025
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8202588566930618615}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3.355}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4182286254762811132}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8222273603787082987
 GameObject:

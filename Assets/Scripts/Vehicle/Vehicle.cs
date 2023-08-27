@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Mirror;
 
 namespace NetworkTanks
 {
@@ -61,12 +62,49 @@ namespace NetworkTanks
             targetInputControl = control.normalized;
         }
 
+        /// <summary>
+        /// Турель
+        /// </summary>
+        public Turret Turret;
+
+        /// <summary>
+        /// Точка прицеливания
+        /// </summary>
+        [SyncVar]
+        private Vector3 netAimPoint;
+        public Vector3 NetAimPoint
+        {
+            get => netAimPoint;
+            set
+            {
+                netAimPoint = value;
+                CmdSetNetAimPoint(value);
+            }
+        }
+        /// <summary>
+        /// Задать точку прицеливания
+        /// </summary>
+        /// <param name="v">Точка прицеливания</param>
+        [Command]
+        private void CmdSetNetAimPoint(Vector3 v)
+        {
+            netAimPoint = v;
+        }
+
 
         protected virtual void Update()
         {
             UpdateEngineSFX();
         }
 
+
+        /// <summary>
+        /// Выстрел
+        /// </summary>
+        public void Fire()
+        {
+            Turret.Fire();
+        }
 
         /// <summary>
         /// Обновление звука двигателя
@@ -77,6 +115,37 @@ namespace NetworkTanks
             {
                 engineSound.pitch = 1.0f + enginePitchModifier * NormalizedLinearVelocity;
                 engineSound.volume = 0.5f + NormalizedLinearVelocity;
+            }
+        }
+
+
+        /// <summary>
+        /// Задать видимость
+        /// </summary>
+        /// <param name="visible">Видимость</param>
+        public void SetVisible(bool visible)
+        {
+            if (visible)
+            {
+                SetLayerToAll("Default");
+            }
+            else
+            {
+                SetLayerToAll("Ignore Main Camera");
+            }
+        }
+
+        /// <summary>
+        /// Применить свой ко всему
+        /// </summary>
+        /// <param name="layerName">Имя слоя</param>
+        private void SetLayerToAll(string layerName)
+        {
+            gameObject.layer = LayerMask.NameToLayer(layerName);
+
+            foreach (Transform t in transform.GetComponentsInChildren<Transform>())
+            {
+                t.gameObject.layer = LayerMask.NameToLayer(layerName);
             }
         }
     }

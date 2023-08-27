@@ -100,10 +100,13 @@ namespace NetworkTanks
         /// FOV по умолчанию
         /// </summary>
         private float defaultFOV;
+
         /// <summary>
         /// Зум включен
         /// </summary>
         private bool isZoom;
+        public bool IsZoom => isZoom;
+
         /// <summary>
         /// Максимальный вертикальный угол по умолчанию
         /// </summary>

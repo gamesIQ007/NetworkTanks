@@ -8,6 +8,21 @@ namespace NetworkTanks
     /// </summary>
     public class Player : NetworkBehaviour
     {
+        public static Player Local
+        {
+            get
+            {
+                var x = NetworkClient.localPlayer;
+
+                if (x != null)
+                {
+                    return x.GetComponent<Player>();
+                }
+
+                return null;
+            }
+        }
+
         /// <summary>
         /// Счётчик ID команд
         /// </summary>
@@ -83,6 +98,14 @@ namespace NetworkTanks
 
         private void Update()
         {
+            if (isLocalPlayer)
+            {
+                if (ActiveVehicle != null)
+                {
+                    ActiveVehicle.SetVisible(!VehicleCamera.Instance.IsZoom);
+                }
+            }
+
             if (isServer)
             {
                 if (Input.GetKeyDown(KeyCode.F9))
