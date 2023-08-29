@@ -13,13 +13,44 @@ namespace NetworkTanks
         /// </summary>
         [SerializeField] private Text text;
 
+        /// <summary>
+        /// Уничтожаемый объект
+        /// </summary>
+        private Destructible destructible;
 
-        private void Update()
+
+        #region Unity Events
+
+        private void Start()
         {
-            if (Player.Local == null) return;
-            if (Player.Local.ActiveVehicle == null) return;
+            NetworkSessionManager.Events.PlayerVehicleSpawned += OnPlayerVehicleSpawned;
+        }
 
-            text.text = Player.Local.ActiveVehicle.HitPoint.ToString();
+        private void OnDestroy()
+        {
+            NetworkSessionManager.Events.PlayerVehicleSpawned -= OnPlayerVehicleSpawned;
+
+            if (destructible != null)
+            {
+                destructible.HitPointChange -= OnHitPointChange;
+            }
+        }
+
+        #endregion
+
+
+        private void OnPlayerVehicleSpawned(Vehicle vehicle)
+        {
+            destructible = vehicle;
+
+            destructible.HitPointChange += OnHitPointChange;
+
+            text.text = destructible.HitPoint.ToString();
+        }
+
+        private void OnHitPointChange(int hitPoint)
+        {
+            text.text = hitPoint.ToString();
         }
     }
 }

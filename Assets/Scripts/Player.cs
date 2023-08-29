@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using Mirror;
 
 namespace NetworkTanks
@@ -22,6 +23,11 @@ namespace NetworkTanks
                 return null;
             }
         }
+
+        /// <summary>
+        /// Событие спавна транспорта
+        /// </summary>
+        public UnityAction<Vehicle> VehicleSpawned;
 
         /// <summary>
         /// Счётчик ID команд
@@ -180,6 +186,8 @@ namespace NetworkTanks
             {
                 VehicleCamera.Instance.SetTarget(ActiveVehicle);
             }
+
+            VehicleSpawned?.Invoke(ActiveVehicle);
         }
     }
 }

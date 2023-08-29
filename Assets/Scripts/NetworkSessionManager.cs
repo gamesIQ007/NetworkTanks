@@ -12,6 +12,7 @@ namespace NetworkTanks
         /// Синглтон
         /// </summary>
         public static NetworkSessionManager Instance => singleton as NetworkSessionManager;
+        public static GameEventCollector Events => Instance.events;
 
         /// <summary>
         /// Являемся сервером?
@@ -33,5 +34,18 @@ namespace NetworkTanks
         /// </summary>
         public Vector3 RandomSpawnPointRed => spawnZoneRed[Random.Range(0, spawnZoneRed.Length)].RandomInside;
         public Vector3 RandomSpawnPointBlue => spawnZoneBlue[Random.Range(0, spawnZoneBlue.Length)].RandomInside;
+
+        /// <summary>
+        /// Сборщик ивентов
+        /// </summary>
+        [SerializeField] private GameEventCollector events;
+
+
+        public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+        {
+            base.OnServerAddPlayer(conn);
+
+            events.SvOnAddPlayer();
+        }
     }
 }

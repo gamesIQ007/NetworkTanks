@@ -13,12 +13,43 @@ namespace NetworkTanks
         /// </summary>
         [SerializeField] private Text text;
 
+        /// <summary>
+        /// Турель
+        /// </summary>
+        private Turret turret;
 
-        private void Update()
+
+        #region Unity Events
+
+        private void Start()
         {
-            if (Player.Local == null) return;
-            if (Player.Local.ActiveVehicle == null) return;
+            NetworkSessionManager.Events.PlayerVehicleSpawned += OnPlayerVehicleSpawned;
+        }
 
+        private void OnDestroy()
+        {
+            NetworkSessionManager.Events.PlayerVehicleSpawned -= OnPlayerVehicleSpawned;
+
+            if (turret != null)
+            {
+                turret.AmmoChanged -= OnAmmoChanged;
+            }
+        }
+
+        #endregion
+
+
+        private void OnPlayerVehicleSpawned(Vehicle vehicle)
+        {
+            turret = vehicle.Turret;
+
+            turret.AmmoChanged += OnAmmoChanged;
+
+            text.text = turret.AmmoCount.ToString();
+        }
+
+        private void OnAmmoChanged(int ammo)
+        {
             text.text = Player.Local.ActiveVehicle.Turret.AmmoCount.ToString();
         }
     }
