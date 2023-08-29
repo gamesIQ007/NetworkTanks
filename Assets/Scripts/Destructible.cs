@@ -25,6 +25,8 @@ namespace NetworkTanks
         /// </summary>
         [SerializeField] private GameObject m_DestroySFX;
 
+        [SerializeField] private UnityEvent destroyed;
+
         /// <summary>
         /// Текущее количество здоровья
         /// </summary>
@@ -71,8 +73,27 @@ namespace NetworkTanks
                     NetworkServer.Spawn(sfx);
                 }
 
-                Destroy(gameObject);
+                m_SyncCurrentHitPoint = 0;
+
+                RpcDestroy();
             }
+        }
+
+        /// <summary>
+        /// Уничтожение
+        /// </summary>
+        [ClientRpc]
+        private void RpcDestroy()
+        {
+            OnDestructibleDestroy();
+        }
+
+        /// <summary>
+        /// Уничтожение дестрактибла
+        /// </summary>
+        protected virtual void OnDestructibleDestroy()
+        {
+            destroyed?.Invoke();
         }
 
 

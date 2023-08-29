@@ -160,6 +160,16 @@ namespace NetworkTanks
         /// </summary>
         public override float LinearVelocity => rigidbody.velocity.magnitude;
 
+
+        /// <summary>
+        /// Визуальная модель
+        /// </summary>
+        [SerializeField] private GameObject visualModel;
+        /// <summary>
+                                                            /// Префаб уничтоженного танка
+                                                            /// </summary>
+        [SerializeField] private GameObject destroyedPrefab;
+
         /// <summary>
         /// Центр масс
         /// </summary>
@@ -285,6 +295,16 @@ namespace NetworkTanks
 
             leftWheelRow.UpdateMeshRotationByRpm(leftRpm);
             rightWheelRow.UpdateMeshRotationByRpm(rightRpm);
+        }
+
+
+        protected override void OnDestructibleDestroy()
+        {
+            base.OnDestructibleDestroy();
+
+            GameObject ruinedVisualModel = Instantiate(destroyedPrefab);
+            ruinedVisualModel.transform.position = visualModel.transform.position;
+            ruinedVisualModel.transform.rotation = visualModel.transform.rotation;
         }
 
 
