@@ -19,6 +19,11 @@ namespace NetworkTanks
         [SerializeField] private Image reloadSlider;
 
         /// <summary>
+        /// Скорость смещения прицела
+        /// </summary>
+        [SerializeField] private float interpolationSpeed;
+
+        /// <summary>
         /// Позиция прицела
         /// </summary>
         private Vector3 aimPosition;
@@ -41,7 +46,8 @@ namespace NetworkTanks
             {
                 result.z = 0;
 
-                aim.transform.position = result;
+                //aim.transform.position = result;
+                aim.transform.position = Vector3.Lerp(aim.transform.position, result, Time.deltaTime * interpolationSpeed);
             }
         }
     }

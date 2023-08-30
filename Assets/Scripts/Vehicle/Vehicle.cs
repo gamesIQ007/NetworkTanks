@@ -136,7 +136,7 @@ namespace NetworkTanks
         }
 
         /// <summary>
-        /// Применить свой ко всему
+        /// Применить слой ко всему
         /// </summary>
         /// <param name="layerName">Имя слоя</param>
         private void SetLayerToAll(string layerName)
