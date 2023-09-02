@@ -47,6 +47,13 @@ namespace NetworkTanks
         /// </summary>
         public UnityAction<int> AmmoChanged;
 
+        /// <summary>
+        /// Диапазон разброса стрельбы
+        /// </summary>
+        [SerializeField] private float spreadShotRange = 0.1f;
+        public float SpreadShotRange => spreadShotRange;
+
+
 
         /// <summary>
         /// Добавить патроны

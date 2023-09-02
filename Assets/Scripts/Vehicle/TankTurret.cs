@@ -90,9 +90,11 @@ namespace NetworkTanks
         {
             base.OnFire();
 
+            Vector3 offset = Random.insideUnitSphere * SpreadShotRange;
+
             GameObject projectile = Instantiate(projectilePrefab.gameObject);
             projectile.transform.position = launchPoint.position;
-            projectile.transform.forward = launchPoint.forward;
+            projectile.transform.forward = launchPoint.forward + offset;
 
             FireSfx();
         }

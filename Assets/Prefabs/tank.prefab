@@ -1799,6 +1799,7 @@ MonoBehaviour:
   fireRate: 5
   projectilePrefab: {fileID: 6964444681288744867, guid: cf5acdbb4ebcb6849b317b6accf9d071, type: 3}
   ammoCount: 20
+  spreadShotRange: 0.05
   tower: {fileID: 2577048890635906183}
   mask: {fileID: 5386745746462615322}
   horizontalRotationSpeed: 30
