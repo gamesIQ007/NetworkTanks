@@ -25,7 +25,8 @@ namespace NetworkTanks
         /// </summary>
         [SerializeField] private GameObject m_DestroySFX;
 
-        [SerializeField] private UnityEvent destroyed;
+        [SerializeField] private UnityEvent<Destructible> destroyed;
+        public UnityEvent<Destructible> OnEventDeath => destroyed;
 
         /// <summary>
         /// Текущее количество здоровья
@@ -93,7 +94,7 @@ namespace NetworkTanks
         /// </summary>
         protected virtual void OnDestructibleDestroy()
         {
-            destroyed?.Invoke();
+            destroyed?.Invoke(this);
         }
 
 

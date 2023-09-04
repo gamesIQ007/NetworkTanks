@@ -92,7 +92,7 @@ namespace NetworkTanks
 
             Vector3 offset = Random.insideUnitSphere * SpreadShotRange;
 
-            GameObject projectile = Instantiate(projectilePrefab.gameObject);
+            GameObject projectile = Instantiate(projectilePrefab[IndexActiveWeapon].gameObject);
             projectile.transform.position = launchPoint.position;
             projectile.transform.forward = launchPoint.forward + offset;
 

@@ -23,8 +23,8 @@ namespace NetworkTanks
         /// <summary>
         /// Префаб снаряда
         /// </summary>
-        [SerializeField] protected Projectile projectilePrefab;
-        public Projectile ProjectilePrefab => projectilePrefab;
+        [SerializeField] protected Projectile[] projectilePrefab;
+        public Projectile[] ProjectilePrefab => projectilePrefab;
 
         /// <summary>
         /// Таймер перезарядки
@@ -34,7 +34,7 @@ namespace NetworkTanks
         /// Нормализованное значение таймера перезарядки
         /// </summary>
         public float FireTimeNormalized => fireTimer / fireRate;
-
+        
         /// <summary>
         /// Количество патронов
         /// </summary>
@@ -53,6 +53,11 @@ namespace NetworkTanks
         [SerializeField] private float spreadShotRange = 0.1f;
         public float SpreadShotRange => spreadShotRange;
 
+        /// <summary>
+        /// Индекс активного оружия
+        /// </summary>
+        private int indexActiveWeapon;
+        public int IndexActiveWeapon => indexActiveWeapon;
 
 
         /// <summary>
@@ -144,6 +149,24 @@ namespace NetworkTanks
             {
                 fireTimer -= Time.deltaTime;
             }
+        }
+
+        /// <summary>
+        /// Сменить активное оружие
+        /// </summary>
+        public void ChangeActiveWeapon()
+        {
+            if (projectilePrefab.Length == 0) return;
+
+            if (indexActiveWeapon == projectilePrefab.Length - 1)
+            {
+                indexActiveWeapon = 0;
+                RpcAmmoChanged();
+                return;
+            }
+
+            indexActiveWeapon++;
+            RpcAmmoChanged();
         }
     }
 }

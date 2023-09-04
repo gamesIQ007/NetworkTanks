@@ -51,6 +51,9 @@ MonoBehaviour:
   syncInterval: 0
   vehiclePrefab:
   - {fileID: 4781355605197135620, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
+  vehicleInputControl: {fileID: 1206999320338639815}
+  Nickname: 
+  teamId: 0
 --- !u!114 &1206999320338639815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +66,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b215bf972e4ca8f45b4f3a95f508b356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vehicle: {fileID: 0}
 --- !u!114 &2102858837310707759
 MonoBehaviour:
   m_ObjectHideFlags: 0

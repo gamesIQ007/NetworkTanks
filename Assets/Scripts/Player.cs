@@ -38,6 +38,10 @@ namespace NetworkTanks
         /// Префаб транспорта
         /// </summary>
         [SerializeField] private Vehicle[] vehiclePrefab;
+        /// <summary>
+        /// Управление транспортом
+        /// </summary>
+        [SerializeField] private VehicleInputControl vehicleInputControl;
 
         /// <summary>
         /// Активный транспорт
@@ -98,6 +102,30 @@ namespace NetworkTanks
             if (isOwned)
             {
                 CmdSetName(NetworkSessionManager.Instance.GetComponent<NetworkManagerHUD>().PlayerNickname);
+
+                NetworkSessionManager.Match.MatchEnd += OnMatchEnd;
+            }
+        }
+
+        public override void OnStopClient()
+        {
+            base.OnStopClient();
+
+            if (isOwned)
+            {
+                NetworkSessionManager.Match.MatchEnd -= OnMatchEnd;
+            }
+        }
+
+        /// <summary>
+        /// При завершении матча
+        /// </summary>
+        private void OnMatchEnd()
+        {
+            if (ActiveVehicle != null)
+            {
+                ActiveVehicle.SetTargetControl(Vector3.zero);
+                vehicleInputControl.enabled = false;
             }
         }
 
@@ -116,20 +144,7 @@ namespace NetworkTanks
             {
                 if (Input.GetKeyDown(KeyCode.F9))
                 {
-                    foreach (var p in FindObjectsOfType<Player>())
-                    {
-                        if (p.ActiveVehicle != null)
-                        {
-                            NetworkServer.UnSpawn(p.ActiveVehicle.gameObject);
-                            Destroy(p.ActiveVehicle.gameObject);
-                            p.ActiveVehicle = null;
-                        }
-                    }
-
-                    foreach (var p in FindObjectsOfType<Player>())
-                    {
-                        p.SvSpawnClientVehicle();
-                    }
+                    NetworkSessionManager.Match.SvRestartMatch();
                 }
             }
 
@@ -186,6 +201,8 @@ namespace NetworkTanks
             {
                 VehicleCamera.Instance.SetTarget(ActiveVehicle);
             }
+
+            vehicleInputControl.enabled = true;
 
             VehicleSpawned?.Invoke(ActiveVehicle);
         }

@@ -13,6 +13,7 @@ namespace NetworkTanks
         /// </summary>
         public static NetworkSessionManager Instance => singleton as NetworkSessionManager;
         public static GameEventCollector Events => Instance.events;
+        public static MatchController Match => Instance.matchController;
 
         /// <summary>
         /// Являемся сервером?
@@ -39,6 +40,10 @@ namespace NetworkTanks
         /// Сборщик ивентов
         /// </summary>
         [SerializeField] private GameEventCollector events;
+        /// <summary>
+        /// Контроллер матчей
+        /// </summary>
+        [SerializeField] private MatchController matchController;
 
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)

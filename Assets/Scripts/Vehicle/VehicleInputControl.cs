@@ -42,6 +42,11 @@ namespace NetworkTanks
                 {
                     player.ActiveVehicle.Fire();
                 }
+
+                if (Input.GetKeyDown(KeyCode.Tab))
+                {
+                    player.ActiveVehicle.Turret.ChangeActiveWeapon();
+                }
             }
         }
 
