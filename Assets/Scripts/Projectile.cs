@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Mirror;
 
 namespace NetworkTanks
 {
@@ -45,6 +46,11 @@ namespace NetworkTanks
         /// </summary>
         private const float RayAdvance = 1.1f;
 
+        /// <summary>
+        /// Владелец
+        /// </summary>
+        public NetworkIdentity Owner { get; set; }
+
 
         #region Unity Events
 
@@ -85,6 +91,19 @@ namespace NetworkTanks
                         float dmg = damage + Random.Range(-damageScatter, damageScatter) * damage;
 
                         destructible.SvApplyDamage((int)dmg);
+
+                        if (destructible.HitPoint <= 0)
+                        {
+                            if (Owner != null)
+                            {
+                                Player player = Owner.GetComponent<Player>();
+
+                                if (player != null)
+                                {
+                                    player.Frags++;
+                                }
+                            }
+                        }
                     }
                 }
 

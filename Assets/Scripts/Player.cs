@@ -4,6 +4,63 @@ using Mirror;
 
 namespace NetworkTanks
 {
+    [System.Serializable]
+    /// <summary>
+    /// Данные игрока
+    /// </summary>
+    public class PlayerData
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        public int ID;
+        /// <summary>
+        /// Ник
+        /// </summary>
+        public string Nickname;
+        /// <summary>
+        /// ID команды
+        /// </summary>
+        public int TeamID;
+
+        public PlayerData(int id, string nickname, int teamID)
+        {
+            ID = id;
+            Nickname = nickname;
+            TeamID = teamID;
+        }
+    }
+
+
+    /// <summary>
+    /// Сериализация/десериализация данных игрока
+    /// </summary>
+    public static class PlayerDateReadWrite
+    {
+        /// <summary>
+        /// Сериализация данных игрока
+        /// </summary>
+        /// <param name="writer">Писец</param>
+        /// <param name="value">Данные игрока</param>
+        public static void WritePlayerData(this NetworkWriter writer, PlayerData value)
+        {
+            writer.WriteInt(value.ID);
+            writer.WriteString(value.Nickname);
+            writer.WriteInt(value.TeamID);
+        }
+
+        /// <summary>
+        /// Десериализация данных игрока
+        /// </summary>
+        /// <param name="reader">Чтец</param>
+        /// <returns>Данные игрока</returns>
+        public static PlayerData ReadPlayerData(this NetworkReader reader)
+        {
+            return new PlayerData(reader.ReadInt(), reader.ReadString(), reader.ReadInt());
+        }
+    }
+
+
     /// <summary>
     /// Игрок
     /// </summary>
@@ -28,6 +85,39 @@ namespace NetworkTanks
         /// Событие спавна транспорта
         /// </summary>
         public UnityAction<Vehicle> VehicleSpawned;
+
+        /// <summary>
+        /// Событие изменения количества фрагов (id игрока и количество его фрагов)
+        /// </summary>
+        public static UnityAction<int, int> ChangeFrags;
+
+        [SyncVar(hook = nameof(OnFragsChanged))]
+        /// <summary>
+        /// Количество фрагов
+        /// </summary>
+        private int frags;
+        public int Frags
+        {
+            set
+            {
+                frags = value;
+                // На сервере
+                ChangeFrags?.Invoke((int)netId, frags);
+            }
+            get
+            {
+                return frags;
+            }
+        }
+        /// <summary>
+        /// Изменение количества фрагов на клиенте
+        /// </summary>
+        /// <param name="oldValue">Старое значение</param>
+        /// <param name="newValue">Новое значение</param>
+        private void OnFragsChanged(int oldValue, int newValue)
+        {
+            ChangeFrags?.Invoke((int)netId, newValue);
+        }
 
         /// <summary>
         /// Счётчик ID команд
@@ -77,6 +167,12 @@ namespace NetworkTanks
         public int TeamID => teamId;
 
         /// <summary>
+        /// Данные игрока
+        /// </summary>
+        private PlayerData data;
+        public PlayerData Data => data;
+
+        /// <summary>
         /// Задать ID команды
         /// </summary>
         /// <param name="teamId">ID команды</param>
@@ -95,6 +191,13 @@ namespace NetworkTanks
             teamIdCounter++;
         }
 
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+
+            PlayerList.Instance.SvRemovePlayer(data);
+        }
+
         public override void OnStartClient()
         {
             base.OnStartClient();
@@ -104,7 +207,33 @@ namespace NetworkTanks
                 CmdSetName(NetworkSessionManager.Instance.GetComponent<NetworkManagerHUD>().PlayerNickname);
 
                 NetworkSessionManager.Match.MatchEnd += OnMatchEnd;
+
+                data = new PlayerData((int)netId, NetworkSessionManager.Instance.GetComponent<NetworkManagerHUD>().PlayerNickname, teamId);
+
+                CmdAddPlayerData(data);
+
+                CmdUpdatePlayerData(data);
             }
+        }
+
+        /// <summary>
+        /// Добавить данные пользователя
+        /// </summary>
+        /// <param name="data">Данные пользователя</param>
+        [Command]
+        private void CmdAddPlayerData(PlayerData data)
+        {
+            PlayerList.Instance.SvAddPlayer(data);
+        }
+
+        /// <summary>
+        /// Обновить данные пользователя
+        /// </summary>
+        /// <param name="data">Данные пользователя</param>
+        [Command]
+        private void CmdUpdatePlayerData(PlayerData data)
+        {
+            this.data = data;
         }
 
         public override void OnStopClient()

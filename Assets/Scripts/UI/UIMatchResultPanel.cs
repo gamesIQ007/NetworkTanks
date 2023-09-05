@@ -27,8 +27,11 @@ namespace NetworkTanks
 
         private void OnDestroy()
         {
-            NetworkSessionManager.Match.MatchStart -= OnMatchStart;
-            NetworkSessionManager.Match.MatchEnd -= OnMatchEnd;
+            if (NetworkSessionManager.Instance != null)
+            {
+                NetworkSessionManager.Match.MatchStart -= OnMatchStart;
+                NetworkSessionManager.Match.MatchEnd -= OnMatchEnd;
+            }
         }
 
 

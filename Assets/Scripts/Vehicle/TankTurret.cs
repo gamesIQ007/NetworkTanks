@@ -92,9 +92,10 @@ namespace NetworkTanks
 
             Vector3 offset = Random.insideUnitSphere * SpreadShotRange;
 
-            GameObject projectile = Instantiate(projectilePrefab[IndexActiveWeapon].gameObject);
+            Projectile projectile = Instantiate(projectilePrefab[IndexActiveWeapon]);
             projectile.transform.position = launchPoint.position;
             projectile.transform.forward = launchPoint.forward + offset;
+            projectile.Owner = tank.Owner;
 
             FireSfx();
         }
