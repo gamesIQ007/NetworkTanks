@@ -58,7 +58,7 @@ namespace NetworkTanks
 
                 Vector3 normPos = sizeMap.GetNormPos(players[i].ActiveVehicle.transform.position);
 
-                Vector3 posInMinimap = new Vector3(normPos.x * background.rectTransform.sizeDelta.x * 0.5f, normPos.z * background.rectTransform.sizeDelta.y * 0.5f, 0);
+                Vector3 posInMinimap = new Vector3(normPos.x * background.rectTransform.sizeDelta.x/* * 0.5f*/, normPos.z * background.rectTransform.sizeDelta.y/* * 0.5f*/, 0);
 
                 tankMarks[i].transform.position = background.transform.position + posInMinimap;
             }
