@@ -325,6 +325,7 @@ namespace NetworkTanks
             if (vehicle == null) return;
 
             ActiveVehicle = vehicle.GetComponent<Vehicle>();
+            ActiveVehicle.Owner = netIdentity;
 
             if (ActiveVehicle != null && ActiveVehicle.isOwned && VehicleCamera.Instance != null)
             {
