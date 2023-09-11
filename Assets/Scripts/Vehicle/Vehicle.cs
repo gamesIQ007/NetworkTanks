@@ -148,5 +148,16 @@ namespace NetworkTanks
                 t.gameObject.layer = LayerMask.NameToLayer(layerName);
             }
         }
+
+
+        /// <summary>
+        /// Владелец
+        /// </summary>
+        [SyncVar(hook = "T")]
+        public NetworkIdentity Owner;
+        private void T(NetworkIdentity oldValue, NetworkIdentity newValue)
+        {
+
+        }
     }
 }

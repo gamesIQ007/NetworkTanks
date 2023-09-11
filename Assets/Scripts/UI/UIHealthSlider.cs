@@ -36,7 +36,7 @@ namespace NetworkTanks
         {
             if (destructible == null) return;
 
-            destructible.HitPointChange -= OnHitPointChange;
+            destructible.HitPointChanged -= OnHitPointChange;
         }
 
 
@@ -48,7 +48,7 @@ namespace NetworkTanks
         {
             this.destructible = destructible;
 
-            destructible.HitPointChange += OnHitPointChange;
+            destructible.HitPointChanged += OnHitPointChange;
 
             slider.maxValue = destructible.MaxHitPoint;
             slider.value = destructible.HitPoint;

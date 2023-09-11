@@ -92,10 +92,11 @@ namespace NetworkTanks
 
             Vector3 offset = Random.insideUnitSphere * SpreadShotRange;
 
-            Projectile projectile = Instantiate(projectilePrefab[IndexActiveWeapon]);
+            Projectile projectile = Instantiate(SelectedProjectile.ProjectilePrefab);
+            projectile.Owner = tank.Owner;
+            projectile.SetProperties(SelectedProjectile);
             projectile.transform.position = launchPoint.position;
             projectile.transform.forward = launchPoint.forward + offset;
-            projectile.Owner = tank.Owner;
 
             FireSfx();
         }

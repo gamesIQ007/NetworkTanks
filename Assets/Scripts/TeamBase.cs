@@ -65,7 +65,7 @@ namespace NetworkTanks
             if (allVehicles.Contains(v)) return;
             if (v.Owner.GetComponent<Player>().TeamID == teamID) return;
 
-            v.HitPointChange += OnHitPointChange;
+            v.HitPointChanged += OnHitPointChange;
 
             allVehicles.Add(v);
         }
@@ -76,7 +76,7 @@ namespace NetworkTanks
 
             if (v == null) return;
 
-            v.HitPointChange -= OnHitPointChange;
+            v.HitPointChanged -= OnHitPointChange;
 
             allVehicles.Remove(v);
         }
@@ -91,7 +91,7 @@ namespace NetworkTanks
 
             for (int i = 0; i < allVehicles.Count; i++)
             {
-                allVehicles[i].HitPointChange -= OnHitPointChange;
+                allVehicles[i].HitPointChanged -= OnHitPointChange;
             }
 
             allVehicles.Clear();

@@ -9,6 +9,8 @@ namespace NetworkTanks
     /// </summary>
     public class Turret : NetworkBehaviour
     {
+        public event UnityAction<int> UpdateSelectedAmmunition;
+
         /// <summary>
         /// Точка запуска снарядов
         /// </summary>
@@ -21,10 +23,10 @@ namespace NetworkTanks
         [SerializeField] private float fireRate;
 
         /// <summary>
-        /// Префаб снаряда
+        /// Аммуниция
         /// </summary>
-        [SerializeField] protected Projectile[] projectilePrefab;
-        public Projectile[] ProjectilePrefab => projectilePrefab;
+        [SerializeField] protected Ammunition[] ammunition;
+        public Ammunition[] Ammunition => ammunition;
 
         /// <summary>
         /// Таймер перезарядки
@@ -36,16 +38,13 @@ namespace NetworkTanks
         public float FireTimeNormalized => fireTimer / fireRate;
         
         /// <summary>
-        /// Количество патронов
+        /// Индекс выбранного из аммуниции снаряда
         /// </summary>
         [SyncVar]
-        [SerializeField] protected int ammoCount;
-        public int AmmoCount => ammoCount;
+        [SerializeField] private int syncSelectedAmmunitionIndex;
+        public int SelectedAmmunitionIndex => syncSelectedAmmunitionIndex;
 
-        /// <summary>
-        /// Событие изменения количества патронов
-        /// </summary>
-        public UnityAction<int> AmmoChanged;
+        public ProjectileProperties SelectedProjectile => ammunition[syncSelectedAmmunitionIndex].Properties;
 
         /// <summary>
         /// Диапазон разброса стрельбы
@@ -61,47 +60,34 @@ namespace NetworkTanks
 
 
         /// <summary>
-        /// Добавить патроны
+        /// Задать выбранный снаряд
         /// </summary>
-        /// <param name="count">Количество</param>
-        [Server]
-        public void SvAddAmmo(int count)
+        /// <param name="index">Индекс снаряда</param>
+        public void SetSelectProjectile(int index)
         {
-            ammoCount += count;
-            RpcAmmoChanged();
+            if (isOwned == false) return;
+
+            if (index < 0 || index > ammunition.Length) return;
+
+            syncSelectedAmmunitionIndex = index;
+
+            if (isClient)
+            {
+                CmdReloadAmmunition();
+            }
+
+            UpdateSelectedAmmunition?.Invoke(index);
         }
 
         /// <summary>
-        /// Отнять патроны
+        /// Перезарядка аммуниции
         /// </summary>
-        /// <param name="count">Количество</param>
-        /// <returns>Удачно ли отняты патроны</returns>
-        [Server]
-        protected virtual bool SvDrawAmmo(int count)
+        [Command]
+        private void CmdReloadAmmunition()
         {
-            if (ammoCount == 0)
-            {
-                return false;
-            }
-
-            if (ammoCount >= count)
-            {
-                ammoCount -= count;
-                RpcAmmoChanged();
-                return true;
-            }
-
-            return false;
+            fireTimer = fireRate;
         }
 
-        /// <summary>
-        /// Изменено количество патронов
-        /// </summary>
-        [ClientRpc]
-        private void RpcAmmoChanged()
-        {
-            AmmoChanged?.Invoke(ammoCount);
-        }
 
         /// <summary>
         /// Стрельба
@@ -120,12 +106,11 @@ namespace NetworkTanks
                 CmdFire();
             }
         }
-
         [Command]
         private void CmdFire()
         {
             if (fireTimer > 0) return;
-            if (SvDrawAmmo(1) == false) return;
+            if (ammunition[syncSelectedAmmunitionIndex].SvDrawAmmo(1) == false) return;
 
             OnFire();
 
@@ -149,24 +134,6 @@ namespace NetworkTanks
             {
                 fireTimer -= Time.deltaTime;
             }
-        }
-
-        /// <summary>
-        /// Сменить активное оружие
-        /// </summary>
-        public void ChangeActiveWeapon()
-        {
-            if (projectilePrefab.Length == 0) return;
-
-            if (indexActiveWeapon == projectilePrefab.Length - 1)
-            {
-                indexActiveWeapon = 0;
-                RpcAmmoChanged();
-                return;
-            }
-
-            indexActiveWeapon++;
-            RpcAmmoChanged();
         }
     }
 }

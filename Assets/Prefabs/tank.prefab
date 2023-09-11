@@ -1754,6 +1754,9 @@ GameObject:
   - component: {fileID: 4781355605197135616}
   - component: {fileID: 7606600691402885326}
   - component: {fileID: 872676770540932415}
+  - component: {fileID: 8169593722098238927}
+  - component: {fileID: 2695449856075254731}
+  - component: {fileID: 5059993395188766522}
   m_Layer: 0
   m_Name: tank
   m_TagString: Untagged
@@ -1799,77 +1802,20 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  m_MaxHitPoint: 480
-  m_DestroySFX: {fileID: 0}
-  destroyed:
+  EventDestroyed:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3807542813983621897}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4781355605197135619}
-        m_TargetAssemblyTypeName: UnityEngine.Rigidbody, UnityEngine
-        m_MethodName: set_isKinematic
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 5664297181955285055}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4781355605197135620}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4781355605197135618}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  Owner: {fileID: 0}
+      m_Calls: []
+  EventRecovered:
+    m_PersistentCalls:
+      m_Calls: []
+  maxHitPoint: 680
+  currentHitPoint: 0
   maxLinearVelocity: 30
   engineSound: {fileID: 5664297181969350634}
   enginePitchModifier: 1
   zoomOpticalPosition: {fileID: 5664297181098447642}
   Turret: {fileID: 4781355605197135618}
+  Owner: {fileID: 0}
   visualModel: {fileID: 3807542813983621897}
   destroyedPrefab: {fileID: 824212710694224803, guid: 7796581b1425c7348a9b5d4ce836e2bf, type: 3}
   centerOfMass: {fileID: 5664297181520133670}
@@ -2041,10 +1987,11 @@ MonoBehaviour:
   syncInterval: 0
   launchPoint: {fileID: 644824028157615025}
   fireRate: 5
-  projectilePrefab:
-  - {fileID: 6964444681288744867, guid: cf5acdbb4ebcb6849b317b6accf9d071, type: 3}
-  - {fileID: 6964444681288744867, guid: f60814b93b62cfa42bef7704544db4e0, type: 3}
-  ammoCount: 20
+  ammunition:
+  - {fileID: 8169593722098238927}
+  - {fileID: 2695449856075254731}
+  - {fileID: 5059993395188766522}
+  syncSelectedAmmunitionIndex: 0
   spreadShotRange: 0
   tower: {fileID: 2577048890635906183}
   mask: {fileID: 5386745746462615322}
@@ -2141,6 +2088,57 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &8169593722098238927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4781355605197135621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cab6b7fb02d011498a93b66829539ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  properties: {fileID: 11400000, guid: 449fa42b31778cd49bccbc42ec17c6ba, type: 2}
+  syncAmmoCount: 15
+--- !u!114 &2695449856075254731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4781355605197135621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cab6b7fb02d011498a93b66829539ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  properties: {fileID: 11400000, guid: 36ba4f435f7f4e64d8164a3357ea9f13, type: 2}
+  syncAmmoCount: 5
+--- !u!114 &5059993395188766522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4781355605197135621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cab6b7fb02d011498a93b66829539ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  properties: {fileID: 11400000, guid: 4c8b6bb23e107304fb037f129aad35fe, type: 2}
+  syncAmmoCount: 5
 --- !u!1 &4952627186969188227
 GameObject:
   m_ObjectHideFlags: 0

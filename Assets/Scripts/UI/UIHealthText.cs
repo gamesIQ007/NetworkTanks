@@ -35,7 +35,7 @@ namespace NetworkTanks
 
             if (destructible != null)
             {
-                destructible.HitPointChange -= OnHitPointChange;
+                destructible.HitPointChanged -= OnHitPointChange;
             }
         }
 
@@ -46,7 +46,7 @@ namespace NetworkTanks
         {
             destructible = vehicle;
 
-            destructible.HitPointChange += OnHitPointChange;
+            destructible.HitPointChanged += OnHitPointChange;
 
             text.text = destructible.HitPoint.ToString();
         }

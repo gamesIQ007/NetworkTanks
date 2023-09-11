@@ -12,50 +12,50 @@ namespace NetworkTanks
         /// <summary>
         /// Событие изменения здоровья
         /// </summary>
-        public UnityAction<int> HitPointChange;
+        public event UnityAction<int> HitPointChanged;
+        /// <summary>
+        /// Событие: уничтожен
+        /// </summary>
+        public event UnityAction<Destructible> Destroyed;
+        /// <summary>
+        /// Событие: восстановлен
+        /// </summary>
+        public event UnityAction<Destructible> Recovered;
+
+        /// <summary>
+        /// Событие: уничтожен
+        /// </summary>
+        [SerializeField] private UnityEvent EventDestroyed;
+        /// <summary>
+        /// Событие: восстановлен
+        /// </summary>
+        [SerializeField] private UnityEvent EventRecovered;
 
         /// <summary>
         /// Максимальное количество здоровья
         /// </summary>
-        [SerializeField] private int m_MaxHitPoint;
-        public int MaxHitPoint => m_MaxHitPoint;
-
-        /// <summary>
-        /// Эффект при смерти
-        /// </summary>
-        [SerializeField] private GameObject m_DestroySFX;
-
-        [SerializeField] private UnityEvent<Destructible> destroyed;
-        public UnityEvent<Destructible> OnEventDeath => destroyed;
+        [SerializeField] private int maxHitPoint;
+        public int MaxHitPoint => maxHitPoint;
 
         /// <summary>
         /// Текущее количество здоровья
         /// </summary>
-        private int m_CurrentHitPoint;
-        public int HitPoint => m_CurrentHitPoint;
-        [SyncVar(hook = nameof(ChangeHitPoint))]
-        private int m_SyncCurrentHitPoint;
+        [SerializeField] private int currentHitPoint; // дебаг
+        public int HitPoint => currentHitPoint;
+        [SyncVar(hook = nameof(SyncHitPoint))]
+        private int syncCurrentHitPoint;
 
+
+        #region Server
 
         public override void OnStartServer()
         {
             base.OnStartServer();
 
-            m_SyncCurrentHitPoint = m_MaxHitPoint;
-            m_CurrentHitPoint = m_MaxHitPoint;
+            syncCurrentHitPoint = maxHitPoint;
+            currentHitPoint = maxHitPoint;
         }
 
-
-        /// <summary>
-        /// Изменить количество здоровья
-        /// </summary>
-        /// <param name="oldValue">Старое значение</param>
-        /// <param name="newValue">Новое значение</param>
-        private void ChangeHitPoint(int oldValue, int newValue)
-        {
-            m_CurrentHitPoint = newValue;
-            HitPointChange?.Invoke(newValue);
-        }
 
         /// <summary>
         /// Нанести урон
@@ -64,20 +64,42 @@ namespace NetworkTanks
         [Server]
         public void SvApplyDamage(int damage)
         {
-            m_SyncCurrentHitPoint -= damage;
+            syncCurrentHitPoint -= damage;
 
-            if (m_SyncCurrentHitPoint <= 0)
+            if (syncCurrentHitPoint <= 0)
             {
-                if (m_DestroySFX != null)
-                {
-                    GameObject sfx = Instantiate(m_DestroySFX, transform.position, Quaternion.identity);
-                    NetworkServer.Spawn(sfx);
-                }
-
-                m_SyncCurrentHitPoint = 0;
+                syncCurrentHitPoint = 0;
 
                 RpcDestroy();
             }
+        }
+
+        /// <summary>
+        /// Восстановление
+        /// </summary>
+        [Server]
+        public void SvRecovery()
+        {
+            syncCurrentHitPoint = maxHitPoint;
+            currentHitPoint = maxHitPoint;
+
+            RpcRecovery();
+        }
+
+        #endregion
+
+
+        #region Client
+
+        /// <summary>
+        /// Изменить количество здоровья
+        /// </summary>
+        /// <param name="oldValue">Старое значение</param>
+        /// <param name="newValue">Новое значение</param>
+        private void SyncHitPoint(int oldValue, int newValue)
+        {
+            currentHitPoint = newValue;
+            HitPointChanged?.Invoke(newValue);
         }
 
         /// <summary>
@@ -86,26 +108,20 @@ namespace NetworkTanks
         [ClientRpc]
         private void RpcDestroy()
         {
-            OnDestructibleDestroy();
+            Destroyed?.Invoke(this);
+            EventDestroyed?.Invoke();
         }
 
         /// <summary>
-        /// Уничтожение дестрактибла
+        /// Восстановление
         /// </summary>
-        protected virtual void OnDestructibleDestroy()
+        [ClientRpc]
+        private void RpcRecovery()
         {
-            destroyed?.Invoke(this);
+            Recovered?.Invoke(this);
+            EventRecovered?.Invoke();
         }
 
-
-        /// <summary>
-        /// Владелец
-        /// </summary>
-        [SyncVar(hook = "T")]
-        public NetworkIdentity Owner;
-        private void T(NetworkIdentity oldValue, NetworkIdentity newValue)
-        {
-
-        }
+        #endregion
     }
 }

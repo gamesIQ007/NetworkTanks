@@ -1,0 +1,144 @@
+﻿using UnityEngine;
+using Mirror;
+
+namespace NetworkTanks
+{
+    /// <summary>
+    /// Снаряд
+    /// </summary>
+    public class Projectile : MonoBehaviour
+    {
+        /// <summary>
+        /// Свойства снаряда
+        /// </summary>
+        [SerializeField] private ProjectileProperties properties;
+        public ProjectileProperties Properties => properties;
+
+        /// <summary>
+        /// Движение снаряда
+        /// </summary>
+        [SerializeField] private ProjectileMovement movement;
+        public ProjectileMovement Movement => movement;
+
+        /// <summary>
+        /// Проверка попадания снаряда
+        /// </summary>
+        [SerializeField] private ProjectileHit hit;
+        public ProjectileHit Hit => hit;
+
+        [Space(5)]
+        /// <summary>
+        /// Визуальная модель
+        /// </summary>
+        [SerializeField] private GameObject visualModel;
+
+        [Space(5)]
+        /// <summary>
+        /// Время жизни
+        /// </summary>
+        [SerializeField] private float lifeTime;
+        /// <summary>
+        /// Время перед уничтожением
+        /// </summary>
+        [SerializeField] private float delayBeforeDestroy;
+
+        /// <summary>
+        /// Владелец
+        /// </summary>
+        public NetworkIdentity Owner { get; set; }
+
+
+        #region Unity Events
+
+        private void Start()
+        {
+            Destroy(gameObject, lifeTime);
+        }
+
+        private void Update()
+        {
+            hit.Check();
+
+            movement.Move();
+
+            if (hit.IsHit)
+            {
+                OnHit();
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Задать свойства
+        /// </summary>
+        /// <param name="properties">Свойства</param>
+        public void SetProperties(ProjectileProperties properties)
+        {
+            this.properties = properties;
+        }
+
+
+        /// <summary>
+        /// При столкновении
+        /// </summary>
+        private void OnHit()
+        {
+            transform.position = hit.RaycastHit.point;
+
+            if (NetworkSessionManager.Instance.IsServer)
+            {
+                if (hit.HitDestructible != null)
+                {
+                    SvTakeDamage();
+
+                    SvAddFrags();
+                }
+            }
+
+            Destroy();
+        }
+
+        /// <summary>
+        /// Нанесение урона
+        /// </summary>
+        private void SvTakeDamage()
+        {
+            float damage = properties.Damage;
+            //float damage = properties.GetSpreadDamage();
+
+            hit.HitDestructible.SvApplyDamage((int)damage);
+        }
+
+        /// <summary>
+        /// Добавление фрагов
+        /// </summary>
+        private void SvAddFrags()
+        {
+            if (hit.HitDestructible.HitPoint <= 0)
+            {
+                if (Owner != null)
+                {
+                    Player player = Owner.GetComponent<Player>();
+
+                    if (player != null)
+                    {
+                        player.Frags++;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Уничтожение
+        /// </summary>
+        private void Destroy()
+        {
+            visualModel.SetActive(false);
+            enabled = false;
+
+            Destroy(gameObject, delayBeforeDestroy);
+        }
+    }
+}

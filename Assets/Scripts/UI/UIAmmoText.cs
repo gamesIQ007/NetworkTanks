@@ -8,15 +8,10 @@ namespace NetworkTanks
     /// </summary>
     public class UIAmmoText : MonoBehaviour
     {
-        /// <summary>
+        /*/// <summary>
         /// Текст
         /// </summary>
         [SerializeField] private Text text;
-
-        /// <summary>
-        /// Изображения снарядов
-        /// </summary>
-        [SerializeField] private Image[] images;
 
         /// <summary>
         /// Турель
@@ -54,21 +49,11 @@ namespace NetworkTanks
             turret.AmmoChanged += OnAmmoChanged;
 
             text.text = turret.AmmoCount.ToString();
-
-            for (int i = 0; i < images.Length; i++)
-            {
-                images[i].enabled = i == turret.IndexActiveWeapon;
-            }
         }
 
         private void OnAmmoChanged(int ammo)
         {
             text.text = Player.Local.ActiveVehicle.Turret.AmmoCount.ToString();
-
-            for (int i = 0; i < images.Length; i++)
-            {
-                images[i].enabled = i == turret.IndexActiveWeapon;
-            }
-        }
+        }*/
     }
 }

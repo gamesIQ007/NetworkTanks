@@ -257,6 +257,12 @@ namespace NetworkTanks
         {
             rigidbody = GetComponent<Rigidbody>();
             rigidbody.centerOfMass = centerOfMass.localPosition;
+            Destroyed += OnTrackTankDestroyed;
+        }
+
+        private void OnDestroy()
+        {
+            Destroyed -= OnTrackTankDestroyed;
         }
 
         private void FixedUpdate()
@@ -270,6 +276,18 @@ namespace NetworkTanks
         }
 
         #endregion
+
+
+        /// <summary>
+        /// При уничтожении
+        /// </summary>
+        /// <param name="arg0">Дестрактибл</param>
+        private void OnTrackTankDestroyed(Destructible arg0)
+        {
+            GameObject ruinedVisualModel = Instantiate(destroyedPrefab);
+            ruinedVisualModel.transform.position = visualModel.transform.position;
+            ruinedVisualModel.transform.rotation = visualModel.transform.rotation;
+        }
 
 
         /// <summary>
@@ -295,16 +313,6 @@ namespace NetworkTanks
 
             leftWheelRow.UpdateMeshRotationByRpm(leftRpm);
             rightWheelRow.UpdateMeshRotationByRpm(rightRpm);
-        }
-
-
-        protected override void OnDestructibleDestroy()
-        {
-            base.OnDestructibleDestroy();
-
-            GameObject ruinedVisualModel = Instantiate(destroyedPrefab);
-            ruinedVisualModel.transform.position = visualModel.transform.position;
-            ruinedVisualModel.transform.rotation = visualModel.transform.rotation;
         }
 
 

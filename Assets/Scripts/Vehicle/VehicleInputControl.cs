@@ -43,10 +43,9 @@ namespace NetworkTanks
                     player.ActiveVehicle.Fire();
                 }
 
-                if (Input.GetKeyDown(KeyCode.Tab))
-                {
-                    player.ActiveVehicle.Turret.ChangeActiveWeapon();
-                }
+                if (Input.GetKeyDown(KeyCode.Alpha1)) player.ActiveVehicle.Turret.SetSelectProjectile(0);
+                if (Input.GetKeyDown(KeyCode.Alpha2)) player.ActiveVehicle.Turret.SetSelectProjectile(1);
+                if (Input.GetKeyDown(KeyCode.Alpha3)) player.ActiveVehicle.Turret.SetSelectProjectile(2);
             }
         }
 

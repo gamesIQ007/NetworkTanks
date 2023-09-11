@@ -38,7 +38,7 @@ namespace NetworkTanks
             {
                 if (v.ActiveVehicle != null)
                 {
-                    v.ActiveVehicle.OnEventDeath.AddListener(OnEventDeathHandler);
+                    v.ActiveVehicle.Destroyed += OnVehicleDestroyed;
 
                     if (v.TeamID == TeamSide.TeamRed) red++;
                     else
@@ -55,10 +55,14 @@ namespace NetworkTanks
         /// <summary>
         /// Обработчик события смерти
         /// </summary>
-        /// <param name="destructible">Погибший дестрактибл</param>
-        private void OnEventDeathHandler(Destructible destructible)
+        /// <param name="dest">Погибший дестрактибл</param>
+        private void OnVehicleDestroyed(Destructible dest)
         {
-            var ownerPlayer = destructible.Owner?.GetComponent<Player>();
+            Vehicle v = (dest as Vehicle);
+
+            if (v == null) return;
+
+            var ownerPlayer = v.Owner.GetComponent<Player>();
 
             if (ownerPlayer == null) return;
 
