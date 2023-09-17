@@ -91,7 +91,8 @@ namespace NetworkTanks
             {
                 ProjectileHitResult hitResult = hit.GetHitResult();
 
-                if (hitResult.Type == ProjectileHitType.Penetration || hitResult.Type == ProjectileHitType.ModulePenetration)
+                if (hitResult.Type == ProjectileHitType.Penetration || hitResult.Type == ProjectileHitType.ModulePenetration
+                    || (hitResult.Type == ProjectileHitType.Nopenetration && properties.Type == ProjectileType.HighExplosive))
                 {
                     SvTakeDamage(hitResult);
 

@@ -166,6 +166,13 @@ namespace NetworkTanks
                     if (projectilePenetration < reducedArmor)
                     {
                         hitResult.Type = ProjectileHitType.Nopenetration;
+
+                        if (projectile.Properties.Type == ProjectileType.HighExplosive)
+                        {
+                            hitResult.Type = ProjectileHitType.Penetration;
+
+                            hitResult.Damage = projectile.Properties.GetSpreadDamage();
+                        }
                     }
                 }
             }

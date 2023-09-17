@@ -20,3 +20,8 @@ MonoBehaviour:
   impactForce: 5000
   damage: 50
   damageSpread: 0
+  caliber: 85
+  armorPenetration: 50
+  armorPenetrationSpread: 0.25
+  normalizationAngle: 5
+  ricochetAngle: 70
