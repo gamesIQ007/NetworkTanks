@@ -20,6 +20,14 @@ namespace NetworkTanks
         /// </summary>
         Ricochet,
         /// <summary>
+        /// Пробил по модулю
+        /// </summary>
+        ModulePenetration,
+        /// <summary>
+        /// Не пробил по модулю
+        /// </summary>
+        ModuleNoPenetration,
+        /// <summary>
         /// Попадение в окружение
         /// </summary>
         Environment
@@ -141,7 +149,7 @@ namespace NetworkTanks
             Debug.DrawRay(raycastHit.point, raycastHit.normal, Color.green);
             Debug.DrawRay(raycastHit.point, projectile.transform.right, Color.yellow);
 
-            if (angle > projectile.Properties.RicochetAngle && projectile.Properties.Caliber < hitArmor.Thickness * 3)
+            if (angle > projectile.Properties.RicochetAngle && projectile.Properties.Caliber < hitArmor.Thickness * 3 && hitArmor.Type == ArmorType.Vehicle)
             {
                 hitResult.Type = ProjectileHitType.Ricochet;
             }
@@ -163,6 +171,18 @@ namespace NetworkTanks
             }
 
             Debug.Log($"Armor: {hitArmor.Thickness}, reducedArmor: {reducedArmor}, angle: {angle}, normalization: {normalization}, penetration: {projectilePenetration}, type: {hitResult.Type}");
+
+            if (hitArmor.Type == ArmorType.Module)
+            {
+                if (hitResult.Type == ProjectileHitType.Penetration)
+                {
+                    hitResult.Type = ProjectileHitType.ModulePenetration;
+                }
+                if (hitResult.Type == ProjectileHitType.Nopenetration)
+                {
+                    hitResult.Type = ProjectileHitType.ModuleNoPenetration;
+                }
+            }
 
             hitResult.Point = raycastHit.point;
 

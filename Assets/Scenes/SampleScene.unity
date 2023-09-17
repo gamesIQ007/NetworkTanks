@@ -231,7 +231,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6506301}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 159.3, y: 1.01, z: -39.2}
+  m_LocalPosition: {x: 159.3, y: 0.33, z: -39.2}
   m_LocalScale: {x: 15, y: 1, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -245,6 +245,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 520455741025539059, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
+      propertyPath: EventDestroyed.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520455741025539059, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
+      propertyPath: EventDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 520455741025539059, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
+      propertyPath: EventDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4781355605197135621, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
       propertyPath: m_Name
       value: tank (1)
@@ -900,7 +912,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 402868547}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -71.1, y: 1.01, z: -41.8}
+  m_LocalPosition: {x: -71.1, y: 0.47, z: -41.8}
   m_LocalScale: {x: 15, y: 1, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []

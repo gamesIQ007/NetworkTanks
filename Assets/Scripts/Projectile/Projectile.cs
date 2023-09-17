@@ -91,7 +91,7 @@ namespace NetworkTanks
             {
                 ProjectileHitResult hitResult = hit.GetHitResult();
 
-                if (hitResult.Type == ProjectileHitType.Penetration)
+                if (hitResult.Type == ProjectileHitType.Penetration || hitResult.Type == ProjectileHitType.ModulePenetration)
                 {
                     SvTakeDamage(hitResult);
 
@@ -118,6 +118,8 @@ namespace NetworkTanks
         /// </summary>
         private void SvAddFrags()
         {
+            if (hit.HitArmor.Type == ArmorType.Module) return;
+
             if (hit.HitArmor.Destructible.HitPoint <= 0)
             {
                 if (Owner != null)

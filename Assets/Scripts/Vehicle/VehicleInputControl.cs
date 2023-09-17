@@ -68,7 +68,7 @@ namespace NetworkTanks
 
             foreach (var hit in hits)
             {
-                if (hit.rigidbody == m)
+                if (hit.rigidbody == m || hit.collider.isTrigger == true)
                 {
                     continue;
                 }

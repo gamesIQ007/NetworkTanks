@@ -50,5 +50,14 @@ namespace NetworkTanks
         {
             transform.SetParent(parent);
         }
+
+        /// <summary>
+        /// Задать дестрактибл
+        /// </summary>
+        /// <param name="destructible">Дестрактибл</param>
+        public void SetDestrucible(Destructible destructible)
+        {
+            this.destructible = destructible;
+        }
     }
 }
