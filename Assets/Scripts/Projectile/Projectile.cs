@@ -89,12 +89,16 @@ namespace NetworkTanks
 
             if (NetworkSessionManager.Instance.IsServer)
             {
-                if (hit.HitDestructible != null)
+                ProjectileHitResult hitResult = hit.GetHitResult();
+
+                if (hitResult.Type == ProjectileHitType.Penetration)
                 {
-                    SvTakeDamage();
+                    SvTakeDamage(hitResult);
 
                     SvAddFrags();
                 }
+
+                Owner.GetComponent<Player>().SvInvokeProjectileHit(hitResult);
             }
 
             Destroy();
@@ -103,12 +107,10 @@ namespace NetworkTanks
         /// <summary>
         /// Нанесение урона
         /// </summary>
-        private void SvTakeDamage()
+        /// <param name="hitResult">Результат пробивания</param>
+        private void SvTakeDamage(ProjectileHitResult hitResult)
         {
-            float damage = properties.Damage;
-            //float damage = properties.GetSpreadDamage();
-
-            hit.HitDestructible.SvApplyDamage((int)damage);
+            hit.HitArmor.Destructible.SvApplyDamage((int)hitResult.Damage);
         }
 
         /// <summary>
@@ -116,7 +118,7 @@ namespace NetworkTanks
         /// </summary>
         private void SvAddFrags()
         {
-            if (hit.HitDestructible.HitPoint <= 0)
+            if (hit.HitArmor.Destructible.HitPoint <= 0)
             {
                 if (Owner != null)
                 {

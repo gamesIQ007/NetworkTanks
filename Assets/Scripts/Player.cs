@@ -84,7 +84,12 @@ namespace NetworkTanks
         /// <summary>
         /// Событие спавна транспорта
         /// </summary>
-        public UnityAction<Vehicle> VehicleSpawned;
+        public event UnityAction<Vehicle> VehicleSpawned;
+
+        /// <summary>
+        /// Событие попадения
+        /// </summary>
+        public event UnityAction<ProjectileHitResult> ProjectileHit;
 
         /// <summary>
         /// Событие изменения количества фрагов (id игрока и количество его фрагов)
@@ -180,6 +185,29 @@ namespace NetworkTanks
         public void CmdSetTeamID(int teamId)
         {
             this.teamId = teamId;
+        }
+
+
+        /// <summary>
+        /// Вызов результата попадания
+        /// </summary>
+        /// <param name="hitResult">Результат попадания</param>
+        [Server]
+        public void SvInvokeProjectileHit(ProjectileHitResult hitResult)
+        {
+            ProjectileHit?.Invoke(hitResult);
+
+            RpcInvokeProjectileHit(hitResult.Type, hitResult.Damage, hitResult.Point);
+        }
+        [ClientRpc]
+        public void RpcInvokeProjectileHit(ProjectileHitType type, float damage, Vector3 hitPoint)
+        {
+            ProjectileHitResult hitResult = new ProjectileHitResult();
+            hitResult.Type = type;
+            hitResult.Damage = damage;
+            hitResult.Point = hitPoint;
+
+            ProjectileHit?.Invoke(hitResult);
         }
 
 

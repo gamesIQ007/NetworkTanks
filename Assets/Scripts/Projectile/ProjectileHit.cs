@@ -2,6 +2,50 @@
 
 namespace NetworkTanks
 {
+    /// <summary>
+    /// Тип попадания
+    /// </summary>
+    public enum ProjectileHitType
+    {
+        /// <summary>
+        /// Пробил
+        /// </summary>
+        Penetration,
+        /// <summary>
+        /// Не пробил
+        /// </summary>
+        Nopenetration,
+        /// <summary>
+        /// Рикошет
+        /// </summary>
+        Ricochet,
+        /// <summary>
+        /// Попадение в окружение
+        /// </summary>
+        Environment
+    }
+
+
+    /// <summary>
+    /// Результат пробивания
+    /// </summary>
+    public class ProjectileHitResult
+    {
+        /// <summary>
+        /// Тип попадания
+        /// </summary>
+        public ProjectileHitType Type;
+        /// <summary>
+        /// Урон
+        /// </summary>
+        public float Damage;
+        /// <summary>
+        /// Точка попадания
+        /// </summary>
+        public Vector3 Point;
+    }
+
+
     [RequireComponent(typeof(Projectile))]
 
     /// <summary>
@@ -26,10 +70,10 @@ namespace NetworkTanks
         public bool IsHit => isHit;
 
         /// <summary>
-        /// Дестрактибл, по которому попало
+        /// Броня, по которой попали
         /// </summary>
-        private Destructible hitDestructible;
-        public Destructible HitDestructible => hitDestructible;
+        private Armor hitArmor;
+        public Armor HitArmor => hitArmor;
 
         /// <summary>
         /// Попадание рейкаста
@@ -54,15 +98,75 @@ namespace NetworkTanks
 
             if (Physics.Raycast(transform.position, transform.forward, out raycastHit, projectile.Properties.Velocity * Time.deltaTime * RAY_ADVANCE))
             {
-                var destructible = raycastHit.transform.root.GetComponent<Destructible>();
+                Armor armor = raycastHit.collider.GetComponent<Armor>();
 
-                if (destructible)
+                if (armor != null)
                 {
-                    hitDestructible = destructible;
+                    hitArmor = armor;
                 }
 
                 isHit = true;
             }
+        }
+
+        /// <summary>
+        /// Получить результат попадания
+        /// </summary>
+        /// <returns>Результат попадания</returns>
+        public ProjectileHitResult GetHitResult()
+        {
+            ProjectileHitResult hitResult = new ProjectileHitResult();
+            hitResult.Damage = 0;
+
+            if (hitArmor == null)
+            {
+                hitResult.Type = ProjectileHitType.Environment;
+                hitResult.Point = raycastHit.point;
+                return hitResult;
+            }
+
+            float normalization = projectile.Properties.NormalizationAngle;
+
+            if (projectile.Properties.Caliber > hitArmor.Thickness * 2)
+            {
+                normalization = (projectile.Properties.NormalizationAngle * 1.4f * projectile.Properties.Caliber) / hitArmor.Thickness;
+            }
+
+            float angle = Mathf.Abs(Vector3.SignedAngle(-projectile.transform.forward, raycastHit.normal, projectile.transform.right)) - normalization;
+            float reducedArmor = hitArmor.Thickness / Mathf.Cos(angle * Mathf.Deg2Rad);
+            float projectilePenetration = projectile.Properties.GetSpreadArmorPenetration();
+
+            // Визуализация попадания
+            Debug.DrawRay(raycastHit.point, -projectile.transform.forward, Color.red);
+            Debug.DrawRay(raycastHit.point, raycastHit.normal, Color.green);
+            Debug.DrawRay(raycastHit.point, projectile.transform.right, Color.yellow);
+
+            if (angle > projectile.Properties.RicochetAngle && projectile.Properties.Caliber < hitArmor.Thickness * 3)
+            {
+                hitResult.Type = ProjectileHitType.Ricochet;
+            }
+            else
+            {
+                if (projectilePenetration >= reducedArmor)
+                {
+                    hitResult.Type = ProjectileHitType.Penetration;
+
+                    hitResult.Damage = projectile.Properties.GetSpreadDamage();
+                }
+                else
+                {
+                    if (projectilePenetration < reducedArmor)
+                    {
+                        hitResult.Type = ProjectileHitType.Nopenetration;
+                    }
+                }
+            }
+
+            Debug.Log($"Armor: {hitArmor.Thickness}, reducedArmor: {reducedArmor}, angle: {angle}, normalization: {normalization}, penetration: {projectilePenetration}, type: {hitResult.Type}");
+
+            hitResult.Point = raycastHit.point;
+
+            return hitResult;
         }
     }
 }
