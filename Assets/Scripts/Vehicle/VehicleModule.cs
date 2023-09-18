@@ -19,11 +19,13 @@ namespace NetworkTanks
         /// Время восстановления
         /// </summary>
         [SerializeField] private float recoveredTime;
+        public float RecoveredTime => recoveredTime;
 
         /// <summary>
         /// Осталось времени до восстановления
         /// </summary>
         private float remainingRecoveryTime;
+        public float RemainingRecoveryTime => remainingRecoveryTime;
 
 
         private void Awake()
