@@ -34,20 +34,20 @@ namespace NetworkTanks
         /// <summary>
         /// Событие начала матча
         /// </summary>
-        public UnityAction MatchStart;
+        public event UnityAction MatchStart;
         /// <summary>
         /// Событие окончания матча
         /// </summary>
-        public UnityAction MatchEnd;
+        public event UnityAction MatchEnd;
 
         /// <summary>
         /// Событие начала матча (сервер)
         /// </summary>
-        public UnityAction SvMatchStart;
+        public event UnityAction SvMatchStart;
         /// <summary>
         /// Событие окончания матча (сервер)
         /// </summary>
-        public UnityAction SvMatchEnd;
+        public event UnityAction SvMatchEnd;
 
         /// <summary>
         /// Матч активен?

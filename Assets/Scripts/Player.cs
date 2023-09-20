@@ -340,6 +340,7 @@ namespace NetworkTanks
 
             ActiveVehicle = playerVehicle.GetComponent<Vehicle>();
             ActiveVehicle.Owner = netIdentity;
+            ActiveVehicle.TeamID = teamId;
 
             RpcSetVehicle(ActiveVehicle.netIdentity);
         }
@@ -354,6 +355,7 @@ namespace NetworkTanks
 
             ActiveVehicle = vehicle.GetComponent<Vehicle>();
             ActiveVehicle.Owner = netIdentity;
+            ActiveVehicle.TeamID = teamId;
 
             if (ActiveVehicle != null && ActiveVehicle.isOwned && VehicleCamera.Instance != null)
             {

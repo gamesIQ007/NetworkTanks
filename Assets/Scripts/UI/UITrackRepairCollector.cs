@@ -44,9 +44,12 @@ namespace NetworkTanks
                 NetworkSessionManager.Match.MatchEnd -= OnEndMatch;
             }
 
-            for (int i = 0; i < vehicleModules.Length; i++)
+            if (vehicleModules != null)
             {
-                vehicleModules[i].Destroyed -= OnTrackDestroyed;
+                for (int i = 0; i < vehicleModules.Length; i++)
+                {
+                    vehicleModules[i].Destroyed -= OnTrackDestroyed;
+                }
             }
         }
 

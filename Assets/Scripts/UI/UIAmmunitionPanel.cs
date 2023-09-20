@@ -40,24 +40,16 @@ namespace NetworkTanks
 
         private void Start()
         {
-            NetworkSessionManager.Events.PlayerVehicleSpawned += OnPlayerVehicleSpawned;
+            NetworkSessionManager.Match.MatchStart += OnStartMatch;
+            NetworkSessionManager.Match.MatchEnd += OnEndMatch;
         }
 
         private void OnDestroy()
         {
             if (NetworkSessionManager.Instance != null)
             {
-                NetworkSessionManager.Events.PlayerVehicleSpawned -= OnPlayerVehicleSpawned;
-            }
-
-            if (turret != null)
-            {
-                turret.UpdateSelectedAmmunition -= OnTurretUpdateSelectedAmmunition;
-            }
-
-            for (int i = 0; i < turret.Ammunition.Length; i++)
-            {
-                turret.Ammunition[i].AmmoCountChanged -= OnAmmoCountChanged;
+                NetworkSessionManager.Match.MatchStart -= OnStartMatch;
+                NetworkSessionManager.Match.MatchEnd -= OnEndMatch;
             }
         }
 
@@ -65,13 +57,19 @@ namespace NetworkTanks
 
 
         /// <summary>
-        /// При спавне транспорта
+        /// При старте матча
         /// </summary>
-        /// <param name="vehicle">Транспорт</param>
-        private void OnPlayerVehicleSpawned(Vehicle vehicle)
+        private void OnStartMatch()
         {
-            turret = vehicle.Turret;
+            turret = Player.Local.ActiveVehicle.Turret;
             turret.UpdateSelectedAmmunition += OnTurretUpdateSelectedAmmunition;
+
+            for (int i = 0; i < ammunitionPanel.childCount; i++)
+            {
+                Destroy(ammunitionPanel.GetChild(i).gameObject);
+            }
+            allAmmunitionElements.Clear();
+            allAmunition.Clear();
 
             for (int i = 0; i < turret.Ammunition.Length; i++)
             {
@@ -89,6 +87,22 @@ namespace NetworkTanks
                 {
                     ammunitionElement.Select();
                 }
+            }
+        }
+
+        /// <summary>
+        /// При окончании матча
+        /// </summary>
+        private void OnEndMatch()
+        {
+            if (turret != null)
+            {
+                turret.UpdateSelectedAmmunition -= OnTurretUpdateSelectedAmmunition;
+            }
+
+            for (int i = 0; i < turret.Ammunition.Length; i++)
+            {
+                turret.Ammunition[i].AmmoCountChanged -= OnAmmoCountChanged;
             }
         }
 

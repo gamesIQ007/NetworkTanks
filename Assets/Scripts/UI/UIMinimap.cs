@@ -30,7 +30,7 @@ namespace NetworkTanks
         /// <summary>
         /// Массив игроков
         /// </summary>
-        private Player[] players;
+        private Vehicle[] vehicles;
 
 
         private void Start()
@@ -54,9 +54,9 @@ namespace NetworkTanks
 
             for (int i = 0; i < tankMarks.Length; i++)
             {
-                if (players[i] == null) continue;
+                if (vehicles[i] == null) continue;
 
-                Vector3 normPos = sizeMap.GetNormPos(players[i].ActiveVehicle.transform.position);
+                Vector3 normPos = sizeMap.GetNormPos(vehicles[i].transform.position);
 
                 Vector3 posInMinimap = new Vector3(normPos.x * background.rectTransform.sizeDelta.x/* * 0.5f*/, normPos.z * background.rectTransform.sizeDelta.y/* * 0.5f*/, 0);
 
@@ -70,15 +70,15 @@ namespace NetworkTanks
         /// </summary>
         private void OnStartMatch()
         {
-            players = FindObjectsOfType<Player>();
+            vehicles = FindObjectsOfType<Vehicle>();
 
-            tankMarks = new UITankMark[players.Length];
+            tankMarks = new UITankMark[vehicles.Length];
 
             for (int i = 0; i < tankMarks.Length; i++)
             {
                 tankMarks[i] = Instantiate(tankMarkPrefab);
 
-                if (players[i].TeamID == Player.Local.TeamID)
+                if (vehicles[i].TeamID == Player.Local.TeamID)
                 {
                     tankMarks[i].SetLocalColor();
                 }

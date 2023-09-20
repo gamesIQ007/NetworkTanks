@@ -23,11 +23,6 @@ namespace NetworkTanks
     public class Armor : MonoBehaviour
     {
         /// <summary>
-        /// Родитель
-        /// </summary>
-        [SerializeField] private Transform parent;
-
-        /// <summary>
         /// Тип брони
         /// </summary>
         [SerializeField] private ArmorType type;
@@ -45,11 +40,6 @@ namespace NetworkTanks
         [SerializeField] private int thickness;
         public int Thickness => thickness;
 
-
-        private void Awake()
-        {
-            transform.SetParent(parent);
-        }
 
         /// <summary>
         /// Задать дестрактибл

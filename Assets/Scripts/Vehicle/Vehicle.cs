@@ -68,6 +68,11 @@ namespace NetworkTanks
         public Turret Turret;
 
         /// <summary>
+        /// ID команды
+        /// </summary>
+        public int TeamID;
+
+        /// <summary>
         /// Точка прицеливания
         /// </summary>
         [SyncVar]

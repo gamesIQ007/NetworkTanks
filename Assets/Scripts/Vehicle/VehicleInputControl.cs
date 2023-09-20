@@ -64,16 +64,15 @@ namespace NetworkTanks
 
             RaycastHit[] hits = Physics.RaycastAll(ray, AimDistance);
 
-            var m = Player.Local.ActiveVehicle.GetComponent<Rigidbody>();
+            var t = Player.Local.ActiveVehicle;
 
-            foreach (var hit in hits)
+            for (int i = hits.Length - 1; i >= 0; i--)
             {
-                if (hit.rigidbody == m || hit.collider.isTrigger == true)
-                {
-                    continue;
-                }
+                if (hits[i].collider.isTrigger) continue;
 
-                return hit.point;
+                if (hits[i].collider.transform.root.GetComponent<Vehicle>() == t) continue;
+
+                return hits[i].point;
             }
 
             return ray.GetPoint(AimDistance);

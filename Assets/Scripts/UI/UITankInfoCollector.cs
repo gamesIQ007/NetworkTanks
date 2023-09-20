@@ -25,7 +25,7 @@ namespace NetworkTanks
         /// <summary>
         /// Список игроков без локального
         /// </summary>
-        private List<Player> playerWithoutLocal;
+        private List<Vehicle> vehicleWithoutLocal;
 
 
         private void Start()
@@ -66,23 +66,23 @@ namespace NetworkTanks
         /// </summary>
         private void OnStartMatch()
         {
-            Player[] players = FindObjectsOfType<Player>();
+            Vehicle[] vehicles = FindObjectsOfType<Vehicle>();
 
-            playerWithoutLocal = new List<Player>(players.Length - 1);
+            vehicleWithoutLocal = new List<Vehicle>(vehicles.Length - 1);
 
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < vehicles.Length; i++)
             {
-                if (players[i] == Player.Local) continue;
+                if (vehicles[i] == Player.Local.ActiveVehicle) continue;
 
-                playerWithoutLocal.Add(players[i]);
+                vehicleWithoutLocal.Add(vehicles[i]);
             }
 
-            tankInfos = new UITankInfo[playerWithoutLocal.Count];
+            tankInfos = new UITankInfo[vehicleWithoutLocal.Count];
 
-            for (int i = 0; i < playerWithoutLocal.Count; i++)
+            for (int i = 0; i < vehicleWithoutLocal.Count; i++)
             {
                 tankInfos[i] = Instantiate(tankInfoPrefab);
-                tankInfos[i].SetTank(playerWithoutLocal[i].ActiveVehicle);
+                tankInfos[i].SetTank(vehicleWithoutLocal[i]);
                 tankInfos[i].transform.SetParent(tankInfoPanel);
             }
         }

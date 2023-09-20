@@ -257,6 +257,10 @@ PrefabInstance:
       propertyPath: EventDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4781355605197135620, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
+      propertyPath: TeamID
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4781355605197135621, guid: df8ca06029427e4429e9435e64fcc9a1, type: 3}
       propertyPath: m_Name
       value: tank (1)
@@ -2500,7 +2504,7 @@ MonoBehaviour:
   minVerticalAngle: -30
   zoomMaskEffect: {fileID: 320453285}
   zoomedFOV: 15
-  zoomedMaxVerticalAngle: 5
+  zoomedMaxVerticalAngle: 30
 --- !u!1 &1004395190
 GameObject:
   m_ObjectHideFlags: 0

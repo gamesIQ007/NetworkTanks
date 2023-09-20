@@ -33,7 +33,7 @@ namespace NetworkTanks
         {
             this.tank = tank;
 
-            healthSlider.Init(tank, tank.Owner.GetComponent<Player>().TeamID, Player.Local.TeamID);
+            healthSlider.Init(tank, tank.TeamID, Player.Local.TeamID);
         }
     }
 }
