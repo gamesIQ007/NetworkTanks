@@ -9,6 +9,11 @@ namespace NetworkTanks
     public class UIMinimap : MonoBehaviour
     {
         /// <summary>
+        /// Главный канвас
+        /// </summary>
+        [SerializeField] private Transform mainCanvas;
+
+        /// <summary>
         /// Размер карты
         /// </summary>
         [SerializeField] private SizeMap sizeMap;
@@ -56,9 +61,20 @@ namespace NetworkTanks
             {
                 if (vehicles[i] == null) continue;
 
+                if (vehicles[i] != Player.Local.ActiveVehicle)
+                {
+                    bool isVisible = Player.Local.ActiveVehicle.Viewer.IsVisible(vehicles[i].netIdentity);
+
+                    tankMarks[i].gameObject.SetActive(isVisible);
+                }
+
+                if (tankMarks[i].gameObject.activeSelf == false) continue;
+
                 Vector3 normPos = sizeMap.GetNormPos(vehicles[i].transform.position);
 
                 Vector3 posInMinimap = new Vector3(normPos.x * background.rectTransform.sizeDelta.x/* * 0.5f*/, normPos.z * background.rectTransform.sizeDelta.y/* * 0.5f*/, 0);
+                posInMinimap.x *= mainCanvas.localScale.x;
+                posInMinimap.y *= mainCanvas.localScale.y;
 
                 tankMarks[i].transform.position = background.transform.position + posInMinimap;
             }

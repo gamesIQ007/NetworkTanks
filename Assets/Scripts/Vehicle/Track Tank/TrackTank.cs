@@ -253,9 +253,13 @@ namespace NetworkTanks
 
         #region Unity Events
 
-        private void Start()
+        private void Awake()
         {
             rigidbody = GetComponent<Rigidbody>();
+        }
+
+        private void Start()
+        {
             rigidbody.centerOfMass = centerOfMass.localPosition;
             Destroyed += OnTrackTankDestroyed;
         }

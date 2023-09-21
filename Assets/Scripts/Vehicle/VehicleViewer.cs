@@ -17,6 +17,16 @@ namespace NetworkTanks
         [SerializeField] private float viewDistance;
 
         /// <summary>
+        /// Дистанция рентгена
+        /// </summary>
+        [SerializeField] private float xrayDistance;
+
+        /// <summary>
+        /// Время ухода из обнаружения
+        /// </summary>
+        [SerializeField] private float exitTimeFromDiscovery;
+
+        /// <summary>
         /// Точки смотрения
         /// </summary>
         [SerializeField] private Transform[] viewPoints;
@@ -34,7 +44,12 @@ namespace NetworkTanks
         /// <summary>
         /// Видимый транспорт
         /// </summary>
-        public SyncList<NetworkIdentity> VisibleVehicles = new SyncList<NetworkIdentity>();
+        public SyncList<NetworkIdentity> visibleVehicles = new SyncList<NetworkIdentity>();
+
+        /// <summary>
+        /// Массив оставшегося времени видимости
+        /// </summary>
+        public List<float> remainingTime = new List<float>();
 
         /// <summary>
         /// Транспорт
@@ -48,6 +63,8 @@ namespace NetworkTanks
 
             for (int i = 0; i < allVehicleDimentions.Count; i++)
             {
+                if (allVehicleDimentions[i].Vehicle == null) continue;
+
                 bool isVisible = false;
 
                 for (int j = 0; j < viewPoints.Length; j++)
@@ -57,14 +74,47 @@ namespace NetworkTanks
                     if (isVisible) break;
                 }
 
-                if (isVisible && VisibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity) == false)
+                if (Vector3.Distance(vehicle.transform.position, allVehicleDimentions[i].transform.position) <= xrayDistance)
                 {
-                    VisibleVehicles.Add(allVehicleDimentions[i].Vehicle.netIdentity);
+                    isVisible = true;
                 }
 
-                if (isVisible == false && VisibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
+                if (isVisible && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity) == false)
                 {
-                    VisibleVehicles.Remove(allVehicleDimentions[i].Vehicle.netIdentity);
+                    visibleVehicles.Add(allVehicleDimentions[i].Vehicle.netIdentity);
+                    remainingTime.Add(-1);
+                }
+
+                if (isVisible && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
+                {
+                    remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = -1;
+                }
+
+                if (isVisible == false && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
+                {
+                    if (remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] == -1)
+                    {
+                        remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = exitTimeFromDiscovery;
+                    }
+                }
+            }
+
+            for (int i = 0; i < remainingTime.Count; i++)
+            {
+                if (remainingTime[i] > 0)
+                {
+                    remainingTime[i] -= Time.deltaTime;
+
+                    if (remainingTime[i] <= 0)
+                    {
+                        remainingTime[i] = 0;
+                    }
+                }
+
+                if (remainingTime[i] == 0)
+                {
+                    remainingTime.RemoveAt(i);
+                    visibleVehicles.RemoveAt(i);
                 }
             }
         }
@@ -116,7 +166,8 @@ namespace NetworkTanks
                 }
                 else
                 {
-                    VisibleVehicles.Add(allVehicles[i].netIdentity);
+                    visibleVehicles.Add(allVehicles[i].netIdentity);
+                    remainingTime.Add(-1);
                 }
             }
         }
@@ -146,7 +197,7 @@ namespace NetworkTanks
         /// <returns>Видно ли танк по ид?</returns>
         public bool IsVisible(NetworkIdentity identity)
         {
-            return VisibleVehicles.Contains(identity);
+            return visibleVehicles.Contains(identity);
         }
     }
 }

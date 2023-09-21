@@ -51,6 +51,12 @@ namespace NetworkTanks
             {
                 if (tankInfos[i] == null) continue;
 
+                bool isVisible = Player.Local.ActiveVehicle.Viewer.IsVisible(tankInfos[i].Tank.netIdentity);
+
+                tankInfos[i].gameObject.SetActive(isVisible);
+
+                if (tankInfos[i].gameObject.activeSelf == false) continue;
+
                 Vector3 screenPos = Camera.main.WorldToScreenPoint(tankInfos[i].Tank.transform.position + tankInfos[i].WorldOffset);
 
                 if (screenPos.z > 0)

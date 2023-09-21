@@ -2025,6 +2025,7 @@ MonoBehaviour:
   enginePitchModifier: 1
   zoomOpticalPosition: {fileID: 5664297181098447642}
   Turret: {fileID: 4781355605197135618}
+  Viewer: {fileID: 184872928647055860}
   TeamID: 0
   Owner: {fileID: 0}
   visualModel: {fileID: 3807542813983621897}
@@ -2459,6 +2460,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   viewDistance: 300
+  xrayDistance: 50
+  exitTimeFromDiscovery: 10
   viewPoints:
   - {fileID: 3515021896353800489}
   - {fileID: 3415353037616266127}

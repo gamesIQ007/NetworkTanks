@@ -68,6 +68,11 @@ namespace NetworkTanks
         public Turret Turret;
 
         /// <summary>
+        /// Смотритель
+        /// </summary>
+        public VehicleViewer Viewer;
+
+        /// <summary>
         /// ID команды
         /// </summary>
         public int TeamID;
