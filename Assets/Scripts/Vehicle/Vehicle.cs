@@ -35,6 +35,8 @@ namespace NetworkTanks
         /// </summary>
         public virtual float LinearVelocity => 0;
 
+        protected float syncLinearVelocity;
+
         /// <summary>
         /// Нормализованная линейная скорость
         /// </summary>
@@ -42,9 +44,9 @@ namespace NetworkTanks
         {
             get
             {
-                if (Mathf.Approximately(0, LinearVelocity)) return 0;
+                if (Mathf.Approximately(0, syncLinearVelocity)) return 0;
 
-                return Mathf.Clamp01(LinearVelocity / maxLinearVelocity);
+                return Mathf.Clamp01(syncLinearVelocity / maxLinearVelocity);
             }
         }
 

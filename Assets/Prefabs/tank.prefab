@@ -1966,6 +1966,7 @@ GameObject:
   - component: {fileID: 9214202707530314746}
   - component: {fileID: 2546434084077683752}
   - component: {fileID: 184872928647055860}
+  - component: {fileID: 2809528367527442505}
   m_Layer: 0
   m_Name: tank
   m_TagString: Untagged
@@ -2467,6 +2468,23 @@ MonoBehaviour:
   - {fileID: 3415353037616266127}
   color: {r: 0, g: 0, b: 0, a: 0}
   allVehicleDimentions: []
+  remainingTime: []
+--- !u!114 &2809528367527442505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4781355605197135621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c069ef91b9f16e479ce9d5638de5548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseDistance: 70
+  percent: 0
+  percentLerpRate: 0.5
+  percentOnFire: 0.07
 --- !u!1 &4952627186969188227
 GameObject:
   m_ObjectHideFlags: 0

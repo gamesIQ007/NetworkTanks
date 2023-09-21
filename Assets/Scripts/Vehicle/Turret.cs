@@ -9,7 +9,15 @@ namespace NetworkTanks
     /// </summary>
     public class Turret : NetworkBehaviour
     {
+        /// <summary>
+        /// Событие смены типа патронов
+        /// </summary>
         public event UnityAction<int> UpdateSelectedAmmunition;
+
+        /// <summary>
+        /// Событие выстрела
+        /// </summary>
+        public event UnityAction Shot;
 
         /// <summary>
         /// Точка запуска снарядов
@@ -117,6 +125,8 @@ namespace NetworkTanks
             fireTimer = fireRate;
 
             RpcFire();
+
+            Shot?.Invoke();
         }
         [ClientRpc]
         private void RpcFire()
@@ -126,6 +136,8 @@ namespace NetworkTanks
             fireTimer = fireRate;
 
             OnFire();
+
+            Shot?.Invoke();
         }
 
         protected virtual void Update()

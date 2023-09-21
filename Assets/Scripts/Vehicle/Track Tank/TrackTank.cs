@@ -276,6 +276,8 @@ namespace NetworkTanks
                 UpdateMotorTorque();
 
                 CmdUpdateWheelRpm(LeftWheelRpm, RightWheelRpm);
+
+                CmdUpdateLinearVelocity(LinearVelocity);
             }
         }
 
@@ -293,6 +295,16 @@ namespace NetworkTanks
             ruinedVisualModel.transform.rotation = visualModel.transform.rotation;
         }
 
+
+        /// <summary>
+        /// Обновить линейную скорость
+        /// </summary>
+        /// <param name="velocity">Скорость</param>
+        [Command]
+        private void CmdUpdateLinearVelocity(float velocity)
+        {
+            syncLinearVelocity = velocity;
+        }
 
         /// <summary>
         /// Обновить вращение колёс

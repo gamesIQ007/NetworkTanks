@@ -12,19 +12,24 @@ namespace NetworkTanks
     public class VehicleViewer : NetworkBehaviour
     {
         /// <summary>
-        /// Дистанция смотрения
-        /// </summary>
-        [SerializeField] private float viewDistance;
-
-        /// <summary>
         /// Дистанция рентгена
         /// </summary>
-        [SerializeField] private float xrayDistance;
+        private const float X_RAY_DISTANCE = 50.0f;
 
         /// <summary>
         /// Время ухода из обнаружения
         /// </summary>
-        [SerializeField] private float exitTimeFromDiscovery;
+        private const float BASE_EXIT_TIME_FROM_DISCOVERY = 10.0f;
+
+        /// <summary>
+        /// Расстояние действия маскировки
+        /// </summary>
+        private const float CAMOUFLAGE_DISTANCE = 150.0f;
+
+        /// <summary>
+        /// Дистанция смотрения
+        /// </summary>
+        [SerializeField] private float viewDistance;
 
         /// <summary>
         /// Точки смотрения
@@ -74,7 +79,7 @@ namespace NetworkTanks
                     if (isVisible) break;
                 }
 
-                if (Vector3.Distance(vehicle.transform.position, allVehicleDimentions[i].transform.position) <= xrayDistance)
+                if (Vector3.Distance(vehicle.transform.position, allVehicleDimentions[i].transform.position) <= X_RAY_DISTANCE)
                 {
                     isVisible = true;
                 }
@@ -94,7 +99,7 @@ namespace NetworkTanks
                 {
                     if (remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] == -1)
                     {
-                        remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = exitTimeFromDiscovery;
+                        remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = BASE_EXIT_TIME_FROM_DISCOVERY;
                     }
                 }
             }
@@ -183,6 +188,23 @@ namespace NetworkTanks
             float distance = Vector3.Distance(transform.position, vehicleDimentions.transform.position);
 
             if (distance > viewDistance)
+            {
+                return false;
+            }
+
+            float currentViewDistance = viewDistance;
+
+            if (distance >= CAMOUFLAGE_DISTANCE)
+            {
+                VehicleCamouflage vehicleCamouflage = vehicleDimentions.Vehicle.GetComponent<VehicleCamouflage>();
+
+                if (vehicleCamouflage != null)
+                {
+                    currentViewDistance = viewDistance - vehicleCamouflage.CurrentDistance;
+                }
+            }
+
+            if (distance > currentViewDistance)
             {
                 return false;
             }
