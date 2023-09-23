@@ -20,6 +20,8 @@ namespace NetworkTanks
         private Vehicle vehicle;
         public Vehicle Vehicle => vehicle;
 
+        RaycastHit[] hits = new RaycastHit[10];
+
 
         private void Awake()
         {
@@ -40,12 +42,12 @@ namespace NetworkTanks
 
             for (int i = 0; i < points.Length; i++)
             {
-                Debug.DrawLine(point, points[i].position, color);
+                //Debug.DrawLine(point, points[i].position, color);
 
-                RaycastHit[] hits = Physics.RaycastAll(point, (points[i].position - point).normalized, Vector3.Distance(point, points[i].position));
+                int length = Physics.RaycastNonAlloc(point, (points[i].position - point).normalized, hits, Vector3.Distance(point, points[i].position));
 
                 visible = true;
-                for (int j = 0; j < hits.Length; j++)
+                for (int j = 0; j < length; j++)
                 {
                     if (hits[j].collider.transform.root == source) continue;
 

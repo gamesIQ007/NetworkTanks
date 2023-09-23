@@ -12,6 +12,11 @@ namespace NetworkTanks
     public class VehicleViewer : NetworkBehaviour
     {
         /// <summary>
+        /// Интервал обновления
+        /// </summary>
+        private const float UPDATE_INTERVAL = 0.33f;
+
+        /// <summary>
         /// Дистанция рентгена
         /// </summary>
         private const float X_RAY_DISTANCE = 50.0f;
@@ -61,66 +66,78 @@ namespace NetworkTanks
         /// </summary>
         private Vehicle vehicle;
 
+        /// <summary>
+        /// Прошедшее время с прошлого обновления
+        /// </summary>
+        private float remainingTimeLastUpdate;
+
 
         private void Update()
         {
             if (isServer == false) return;
 
-            for (int i = 0; i < allVehicleDimentions.Count; i++)
+            remainingTimeLastUpdate += Time.deltaTime;
+
+            if (remainingTimeLastUpdate >= UPDATE_INTERVAL)
             {
-                if (allVehicleDimentions[i].Vehicle == null) continue;
-
-                bool isVisible = false;
-
-                for (int j = 0; j < viewPoints.Length; j++)
+                for (int i = 0; i < allVehicleDimentions.Count; i++)
                 {
-                    isVisible = CheckVisibility(viewPoints[j].position, allVehicleDimentions[i]);
+                    if (allVehicleDimentions[i].Vehicle == null) continue;
 
-                    if (isVisible) break;
-                }
+                    bool isVisible = false;
 
-                if (Vector3.Distance(vehicle.transform.position, allVehicleDimentions[i].transform.position) <= X_RAY_DISTANCE)
-                {
-                    isVisible = true;
-                }
-
-                if (isVisible && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity) == false)
-                {
-                    visibleVehicles.Add(allVehicleDimentions[i].Vehicle.netIdentity);
-                    remainingTime.Add(-1);
-                }
-
-                if (isVisible && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
-                {
-                    remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = -1;
-                }
-
-                if (isVisible == false && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
-                {
-                    if (remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] == -1)
+                    for (int j = 0; j < viewPoints.Length; j++)
                     {
-                        remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = BASE_EXIT_TIME_FROM_DISCOVERY;
+                        isVisible = CheckVisibility(viewPoints[j].position, allVehicleDimentions[i]);
+
+                        if (isVisible) break;
                     }
-                }
-            }
 
-            for (int i = 0; i < remainingTime.Count; i++)
-            {
-                if (remainingTime[i] > 0)
-                {
-                    remainingTime[i] -= Time.deltaTime;
-
-                    if (remainingTime[i] <= 0)
+                    if (Vector3.Distance(vehicle.transform.position, allVehicleDimentions[i].transform.position) <= X_RAY_DISTANCE)
                     {
-                        remainingTime[i] = 0;
+                        isVisible = true;
+                    }
+
+                    if (isVisible && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity) == false)
+                    {
+                        visibleVehicles.Add(allVehicleDimentions[i].Vehicle.netIdentity);
+                        remainingTime.Add(-1);
+                    }
+
+                    if (isVisible && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
+                    {
+                        remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = -1;
+                    }
+
+                    if (isVisible == false && visibleVehicles.Contains(allVehicleDimentions[i].Vehicle.netIdentity))
+                    {
+                        if (remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] == -1)
+                        {
+                            remainingTime[visibleVehicles.IndexOf(allVehicleDimentions[i].Vehicle.netIdentity)] = BASE_EXIT_TIME_FROM_DISCOVERY;
+                        }
                     }
                 }
 
-                if (remainingTime[i] == 0)
+                for (int i = 0; i < remainingTime.Count; i++)
                 {
-                    remainingTime.RemoveAt(i);
-                    visibleVehicles.RemoveAt(i);
+                    if (remainingTime[i] > 0)
+                    {
+                        remainingTime[i] -= Time.deltaTime;
+
+                        if (remainingTime[i] <= 0)
+                        {
+                            remainingTime[i] = 0;
+                        }
+                    }
+
+                    if (remainingTime[i] == 0)
+                    {
+                        remainingTime.RemoveAt(i);
+                        visibleVehicles.RemoveAt(i);
+                    }
                 }
+
+                remainingTimeLastUpdate = 0;
             }
         }
 

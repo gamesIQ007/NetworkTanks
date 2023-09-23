@@ -139,10 +139,14 @@ namespace NetworkTanks
         {
             if (visible)
             {
+                if (gameObject.layer == LayerMask.NameToLayer("Default")) return;
+
                 SetLayerToAll("Default");
             }
             else
             {
+                if (gameObject.layer == LayerMask.NameToLayer("Ignore Main Camera")) return;
+
                 SetLayerToAll("Ignore Main Camera");
             }
         }
