@@ -129,7 +129,7 @@ namespace NetworkTanks
 
                     if (player != null)
                     {
-                        player.Frags++;
+                        player.SvAddFrags();
                     }
                 }
             }

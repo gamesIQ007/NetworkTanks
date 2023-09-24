@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 using Mirror;
 
@@ -32,6 +33,29 @@ namespace NetworkTanks
     public class MatchController : NetworkBehaviour
     {
         /// <summary>
+        /// Счётчик ID команд
+        /// </summary>
+        private static int teamIdCounter;
+
+        /// <summary>
+        /// Получить номер следующей команды
+        /// </summary>
+        /// <returns>Номер следующей команды</returns>
+        public static int GetNextTeam()
+        {
+            return teamIdCounter++ % 2;
+        }
+
+        /// <summary>
+        /// Сбросить счётчик команд
+        /// </summary>
+        public static void ResetTeamCounter()
+        {
+            teamIdCounter = 1;
+        }
+
+
+        /// <summary>
         /// Событие начала матча
         /// </summary>
         public event UnityAction MatchStart;
@@ -48,6 +72,15 @@ namespace NetworkTanks
         /// Событие окончания матча (сервер)
         /// </summary>
         public event UnityAction SvMatchEnd;
+
+        /// <summary>
+        /// Спавнер участников матча
+        /// </summary>
+        [SerializeField] private MatchMemberSpawner spawner;
+        /// <summary>
+        /// Задержка между спавном и началом матча
+        /// </summary>
+        [SerializeField] private float delayAfterSpawnBeforeStartMatch = 0.5f;
 
         /// <summary>
         /// Матч активен?
@@ -101,29 +134,9 @@ namespace NetworkTanks
 
             matchActive = true;
 
-            foreach (var p in FindObjectsOfType<Player>())
-            {
-                if (p.ActiveVehicle != null)
-                {
-                    NetworkServer.UnSpawn(p.ActiveVehicle.gameObject);
-                    Destroy(p.ActiveVehicle.gameObject);
-                    p.ActiveVehicle = null;
-                }
-            }
+            spawner.SvRespawnVehiclesAllMembers();
 
-            foreach (var p in FindObjectsOfType<Player>())
-            {
-                p.SvSpawnClientVehicle();
-            }
-
-            foreach (var c in matchConditions)
-            {
-                c.OnServerMatchStart(this);
-            }
-
-            SvMatchStart?.Invoke();
-
-            RpcMatchStart();
+            StartCoroutine(StartEventMatchWithDelay(delayAfterSpawnBeforeStartMatch));
         }
 
         /// <summary>
@@ -160,6 +173,26 @@ namespace NetworkTanks
             SvMatchEnd?.Invoke();
 
             RpcMatchEnd(WinTeamID);
+        }
+
+
+        /// <summary>
+        /// Запуск матча с задержкой
+        /// </summary>
+        /// <param name="delay">Задержка</param>
+        /// <returns>Задержка</returns>
+        private IEnumerator StartEventMatchWithDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            foreach (var c in matchConditions)
+            {
+                c.OnServerMatchStart(this);
+            }
+
+            SvMatchStart?.Invoke();
+
+            RpcMatchStart();
         }
 
 

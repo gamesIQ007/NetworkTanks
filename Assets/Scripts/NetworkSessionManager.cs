@@ -37,6 +37,16 @@ namespace NetworkTanks
         public Vector3 RandomSpawnPointBlue => spawnZoneBlue[Random.Range(0, spawnZoneBlue.Length)].RandomInside;
 
         /// <summary>
+        /// Получить точку спавна в зависимости от команды
+        /// </summary>
+        /// <param name="teamId">ID команды</param>
+        /// <returns>Точка спавна</returns>
+        public Vector3 GetSpawnPointByTeam(int teamId)
+        {
+            return teamId % 2 == 0 ? RandomSpawnPointRed : RandomSpawnPointBlue;
+        }
+
+        /// <summary>
         /// Сборщик ивентов
         /// </summary>
         [SerializeField] private GameEventCollector events;

@@ -118,26 +118,26 @@ namespace NetworkTanks
                     }
                 }
 
-                for (int i = 0; i < remainingTime.Count; i++)
+                remainingTimeLastUpdate = 0;
+            }
+
+            for (int i = 0; i < remainingTime.Count; i++)
+            {
+                if (remainingTime[i] > 0)
                 {
-                    if (remainingTime[i] > 0)
-                    {
-                        remainingTime[i] -= Time.deltaTime;
+                    remainingTime[i] -= Time.deltaTime;
 
-                        if (remainingTime[i] <= 0)
-                        {
-                            remainingTime[i] = 0;
-                        }
-                    }
-
-                    if (remainingTime[i] == 0)
+                    if (remainingTime[i] <= 0)
                     {
-                        remainingTime.RemoveAt(i);
-                        visibleVehicles.RemoveAt(i);
+                        remainingTime[i] = 0;
                     }
                 }
 
-                remainingTimeLastUpdate = 0;
+                if (remainingTime[i] == 0)
+                {
+                    remainingTime.RemoveAt(i);
+                    visibleVehicles.RemoveAt(i);
+                }
             }
         }
 

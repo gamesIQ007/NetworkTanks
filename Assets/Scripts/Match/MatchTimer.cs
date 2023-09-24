@@ -28,6 +28,8 @@ namespace NetworkTanks
 
         private void Start()
         {
+            timeLeft = matchTime;
+
             if (isServer)
             {
                 enabled = false;

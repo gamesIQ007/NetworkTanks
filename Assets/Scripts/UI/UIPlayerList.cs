@@ -31,13 +31,13 @@ namespace NetworkTanks
 
         private void Start()
         {
-            PlayerList.UpdatePlayerList += OnUpdatePlayerList;
+            MatchMemberList.UpdateList += OnUpdatePlayerList;
             Player.ChangeFrags += OnChangeFrags;
         }
 
         private void OnDestroy()
         {
-            PlayerList.UpdatePlayerList -= OnUpdatePlayerList;
+            MatchMemberList.UpdateList -= OnUpdatePlayerList;
             Player.ChangeFrags -= OnChangeFrags;
         }
 
@@ -46,7 +46,7 @@ namespace NetworkTanks
         /// Обновить список игроков
         /// </summary>
         /// <param name="playerData">Список данных игроков</param>
-        private void OnUpdatePlayerList(List<PlayerData> playerData)
+        private void OnUpdatePlayerList(List<MatchMemberData> playerData)
         {
             for (int i = 0; i < localTeamPanel.childCount; i++)
             {
@@ -72,7 +72,7 @@ namespace NetworkTanks
             }
         }
 
-        private void AddPlayerLable(PlayerData data, UIPlayerLable playerLable, Transform parent)
+        private void AddPlayerLable(MatchMemberData data, UIPlayerLable playerLable, Transform parent)
         {
             UIPlayerLable uiPlayerLable = Instantiate(playerLable);
             uiPlayerLable.transform.SetParent(parent);
@@ -84,13 +84,13 @@ namespace NetworkTanks
         /// <summary>
         /// При изменении фрагов
         /// </summary>
-        /// <param name="playerNetId">ID игрока</param>
+        /// <param name="member">Участник матча</param>
         /// <param name="frag">Количество фрагов</param>
-        private void OnChangeFrags(int playerNetId, int frag)
+        private void OnChangeFrags(MatchMember member, int frag)
         {
             for (int i = 0; i < allPlayerLable.Count; i++)
             {
-                if (allPlayerLable[i].NetID == playerNetId)
+                if (allPlayerLable[i].NetID == member.netId)
                 {
                     allPlayerLable[i].UpdateFrag(frag);
                 }
