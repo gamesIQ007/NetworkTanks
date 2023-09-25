@@ -271,6 +271,15 @@ namespace NetworkTanks
 
         private void FixedUpdate()
         {
+            if (isServer)
+            {
+                UpdateMotorTorque();
+
+                SvUpdateWheelRpm(LeftWheelRpm, RightWheelRpm);
+
+                SvUpdateLinearVelocity(LinearVelocity);
+            }
+
             if (isOwned)
             {
                 UpdateMotorTorque();
@@ -302,6 +311,11 @@ namespace NetworkTanks
         /// <param name="velocity">Скорость</param>
         [Command]
         private void CmdUpdateLinearVelocity(float velocity)
+        {
+            SvUpdateLinearVelocity(velocity);
+        }
+        [Server]
+        private void SvUpdateLinearVelocity(float velocity)
         {
             syncLinearVelocity = velocity;
         }
@@ -410,20 +424,20 @@ namespace NetworkTanks
 
                 if (steering != 0 && (Mathf.Abs(leftWheelRow.MinRpm) < 1 || Mathf.Abs(rightWheelRow.MinRpm) < 1))
                 {
-                    leftWheelRow.SetTorque(rotateTorqueInMotion);
-                    rightWheelRow.SetTorque(rotateTorqueInMotion);
+                    leftWheelRow.SetTorque(rotateTorqueInMotion * Mathf.Sign(currentMotorTorque));
+                    rightWheelRow.SetTorque(rotateTorqueInMotion * Mathf.Sign(currentMotorTorque));
                 }
                 else
                 {
                     if (steering < 0)
                     {
                         leftWheelRow.Brake(rotateBrakeInMotion);
-                        rightWheelRow.SetTorque(rotateTorqueInMotion);
+                        rightWheelRow.SetTorque(rotateTorqueInMotion * Mathf.Sign(currentMotorTorque));
                     }
 
                     if (steering > 0)
                     {
-                        leftWheelRow.SetTorque(rotateTorqueInMotion);
+                        leftWheelRow.SetTorque(rotateTorqueInMotion * Mathf.Sign(currentMotorTorque));
                         rightWheelRow.Brake(rotateBrakeInMotion);
                     }
                 }

@@ -63,7 +63,7 @@ namespace NetworkTanks
             if (v == null) return;
             if (v.HitPoint == 0) return;
             if (allVehicles.Contains(v)) return;
-            if (v.Owner.GetComponent<Player>().TeamID == teamID) return;
+            if (v.Owner.GetComponent<MatchMember>().TeamID == teamID) return;
 
             v.HitPointChanged += OnHitPointChange;
 
