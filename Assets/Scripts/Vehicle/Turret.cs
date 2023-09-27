@@ -117,16 +117,7 @@ namespace NetworkTanks
         [Command]
         private void CmdFire()
         {
-            if (fireTimer > 0) return;
-            if (ammunition[syncSelectedAmmunitionIndex].SvDrawAmmo(1) == false) return;
-
-            OnFire();
-
-            fireTimer = fireRate;
-
-            RpcFire();
-
-            Shot?.Invoke();
+            SvFire();
         }
         [ClientRpc]
         private void RpcFire()
@@ -136,6 +127,20 @@ namespace NetworkTanks
             fireTimer = fireRate;
 
             OnFire();
+
+            Shot?.Invoke();
+        }
+        [Server]
+        public void SvFire()
+        {
+            if (fireTimer > 0) return;
+            if (ammunition[syncSelectedAmmunitionIndex].SvDrawAmmo(1) == false) return;
+
+            OnFire();
+
+            fireTimer = fireRate;
+
+            RpcFire();
 
             Shot?.Invoke();
         }

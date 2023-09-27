@@ -90,7 +90,10 @@ namespace NetworkTanks
             set
             {
                 netAimPoint = value;
-                CmdSetNetAimPoint(value);
+                if (isOwned)
+                {
+                    CmdSetNetAimPoint(value);
+                }
             }
         }
         /// <summary>

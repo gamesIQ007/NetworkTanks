@@ -238,5 +238,37 @@ namespace NetworkTanks
         {
             return visibleVehicles.Contains(identity);
         }
+
+        /// <summary>
+        /// Получение списка всех транспортных средств
+        /// </summary>
+        /// <returns>Список всех транспортных средств</returns>
+        public List<Vehicle> GetAllVehicles()
+        {
+            List<Vehicle> av = new List<Vehicle>(allVehicleDimentions.Count);
+
+            for (int i = 0; i < allVehicleDimentions.Count; i++)
+            {
+                av.Add(allVehicleDimentions[i].Vehicle);
+            }
+
+            return av;
+        }
+
+        /// <summary>
+        /// Получение списка всех видимых транспортных средств
+        /// </summary>
+        /// <returns>Список всех видимых транспортных средств</returns>
+        public List<Vehicle> GetAllVisibleVehicles()
+        {
+            List<Vehicle> av = new List<Vehicle>(allVehicleDimentions.Count);
+
+            for (int i = 0; i < visibleVehicles.Count; i++)
+            {
+                av.Add(visibleVehicles[i].GetComponent<Vehicle>());
+            }
+
+            return av;
+        }
     }
 }

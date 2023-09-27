@@ -15,6 +15,11 @@ namespace NetworkTanks
         [SerializeField] private Transform[] points;
 
         /// <summary>
+        /// Приоритетные точки выстрела
+        /// </summary>
+        [SerializeField] private Transform[] priorityFirePoints;
+
+        /// <summary>
         /// Транспорт
         /// </summary>
         private Vehicle vehicle;
@@ -42,8 +47,6 @@ namespace NetworkTanks
 
             for (int i = 0; i < points.Length; i++)
             {
-                //Debug.DrawLine(point, points[i].position, color);
-
                 int length = Physics.RaycastNonAlloc(point, (points[i].position - point).normalized, hits, Vector3.Distance(point, points[i].position));
 
                 visible = true;
@@ -63,6 +66,16 @@ namespace NetworkTanks
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Получить приоритетную точку выстрела
+        /// </summary>
+        /// <returns>Точка выстрела</returns>
+        public Transform GetPriorityFirePoint()
+        {
+            //temp
+            return priorityFirePoints[0];
         }
 
 

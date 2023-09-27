@@ -3732,7 +3732,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   spawner: {fileID: 756129672}
-  delayAfterSpawnBeforeStartMatch: 5
+  delayAfterSpawnBeforeStartMatch: 1
   WinTeamID: -1
 --- !u!4 &1436603938
 Transform:

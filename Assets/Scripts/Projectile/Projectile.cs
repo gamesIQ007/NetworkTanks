@@ -99,7 +99,15 @@ namespace NetworkTanks
                     SvAddFrags();
                 }
 
-                Owner.GetComponent<Player>().SvInvokeProjectileHit(hitResult);
+                if (Owner != null)
+                {
+                    Player p = Owner.GetComponent<Player>();
+
+                    if (p != null)
+                    {
+                        p.SvInvokeProjectileHit(hitResult);
+                    }
+                }
             }
 
             Destroy();
@@ -125,11 +133,11 @@ namespace NetworkTanks
             {
                 if (Owner != null)
                 {
-                    Player player = Owner.GetComponent<Player>();
+                    MatchMember member = Owner.GetComponent<MatchMember>();
 
-                    if (player != null)
+                    if (member != null)
                     {
-                        player.SvAddFrags();
+                        member.SvAddFrags();
                     }
                 }
             }
