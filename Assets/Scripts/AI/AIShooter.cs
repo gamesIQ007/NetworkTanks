@@ -46,7 +46,6 @@ namespace NetworkTanks
 
         private void Update()
         {
-            FindTarget();
             LookOnTarget();
             TryFire();
         }

@@ -123,8 +123,6 @@ namespace NetworkTanks
 
         private void Update()
         {
-            SetDestination(GameObject.FindGameObjectWithTag("Finish").transform.position);
-
             if (pathUpdateRate > 0)
             {
                 timerUpdatePath += Time.deltaTime;

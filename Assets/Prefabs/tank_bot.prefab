@@ -2527,6 +2527,7 @@ GameObject:
   - component: {fileID: 2541448346733940643}
   - component: {fileID: 8525807279157023020}
   - component: {fileID: 3038508681996949755}
+  - component: {fileID: 2398238304210611334}
   m_Layer: 0
   m_Name: tank_bot
   m_TagString: Untagged
@@ -3099,6 +3100,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewer: {fileID: 184872928647055860}
   firePosition: {fileID: 8174012480366866369}
+--- !u!114 &2398238304210611334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4781355605197135621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52534fc99ef14f4b910494fc9a2a740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  behaviourType: 0
+  patrolChance: 0.75
+  supportChance: 0.3
+  invaderBaseChance: 0.2
+  vehicle: {fileID: 4781355605197135620}
+  movement: {fileID: 8525807279157023020}
+  shooter: {fileID: 3038508681996949755}
 --- !u!1 &4952627186969188227
 GameObject:
   m_ObjectHideFlags: 0
