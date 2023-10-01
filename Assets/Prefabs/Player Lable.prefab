@@ -194,6 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fragText: {fileID: 3509146065970766735}
   nicknameText: {fileID: 1207748141727577180}
+  deadNicknameTextColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
   backgroundImage: {fileID: 5998159046773329051}
   selfColor: {r: 0.735849, g: 0.38386452, b: 0.10065861, a: 0.54509807}
 --- !u!1 &8440302671678024740

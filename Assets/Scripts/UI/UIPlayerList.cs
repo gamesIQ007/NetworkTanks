@@ -28,17 +28,29 @@ namespace NetworkTanks
         /// </summary>
         private List<UIPlayerLable> allPlayerLable = new List<UIPlayerLable>();
 
+        /// <summary>
+        /// Массив транспортов
+        /// </summary>
+        private Vehicle[] vehicles;
+
 
         private void Start()
         {
             MatchMemberList.UpdateList += OnUpdatePlayerList;
             Player.ChangeFrags += OnChangeFrags;
+
+            NetworkSessionManager.Match.MatchStart += OnStartMatch;
         }
 
         private void OnDestroy()
         {
             MatchMemberList.UpdateList -= OnUpdatePlayerList;
             Player.ChangeFrags -= OnChangeFrags;
+
+            if (NetworkSessionManager.Instance != null)
+            {
+                NetworkSessionManager.Match.MatchStart -= OnStartMatch;
+            }
         }
 
 
@@ -72,6 +84,12 @@ namespace NetworkTanks
             }
         }
 
+        /// <summary>
+        /// Добавить метку об участнике
+        /// </summary>
+        /// <param name="data">Данные</param>
+        /// <param name="playerLable">Метка</param>
+        /// <param name="parent">Родитель</param>
         private void AddPlayerLable(MatchMemberData data, UIPlayerLable playerLable, Transform parent)
         {
             UIPlayerLable uiPlayerLable = Instantiate(playerLable);
@@ -95,6 +113,29 @@ namespace NetworkTanks
                     allPlayerLable[i].UpdateFrag(frag);
                 }
             }
+
+            for (int i = 0; i < vehicles.Length; i++)
+            {
+                if (vehicles[i].HitPoint == 0)
+                {
+                    for (int j = 0; j < allPlayerLable.Count; j++)
+                    {
+                        if (allPlayerLable[j].NetID == vehicles[i].netId)
+                        {
+                            allPlayerLable[j].UpdateNickname();
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// При старте матча
+        /// </summary>
+        private void OnStartMatch()
+        {
+            vehicles = FindObjectsOfType<Vehicle>();
         }
     }
 }

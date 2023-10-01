@@ -16,6 +16,10 @@ namespace NetworkTanks
         /// Текст с ником
         /// </summary>
         [SerializeField] private Text nicknameText;
+        /// <summary>
+        /// Цвет текста убитого
+        /// </summary>
+        [SerializeField] private Color deadNicknameTextColor;
 
         /// <summary>
         /// Фоновое изображение
@@ -57,6 +61,14 @@ namespace NetworkTanks
         public void UpdateFrag(int frag)
         {
             fragText.text = frag.ToString();
+        }
+
+        /// <summary>
+        /// Обновить ник
+        /// </summary>
+        public void UpdateNickname()
+        {
+            nicknameText.color = deadNicknameTextColor;
         }
     }
 }

@@ -65,6 +65,11 @@ namespace NetworkTanks
                 {
                     bool isVisible = Player.Local.ActiveVehicle.Viewer.IsVisible(vehicles[i].netIdentity);
 
+                    if (vehicles[i].HitPoint == 0)
+                    {
+                        isVisible = false;
+                    }
+
                     tankMarks[i].gameObject.SetActive(isVisible);
                 }
 
