@@ -22,6 +22,15 @@ namespace NetworkTanks
         [SerializeField] private Transform baseBluePoint;
 
         /// <summary>
+        /// Путь к красной базе
+        /// </summary>
+        [SerializeField] private Transform[] pathToRedBase;
+        /// <summary>
+        /// Путь к синей базе
+        /// </summary>
+        [SerializeField] private Transform[] pathToBlueBase;
+
+        /// <summary>
         /// Красные огневые точки
         /// </summary>
         [SerializeField] private Transform[] fireRedPoints;
@@ -55,6 +64,33 @@ namespace NetworkTanks
             }
             if (teamID == TeamSide.TeamBlue)
             {
+                return baseRedPoint.position;
+            }
+            return Vector3.zero;
+        }
+
+        /// <summary>
+        /// Получить точку пути к базе врага
+        /// </summary>
+        /// <param name="teamID">ID команды</param>
+        /// <param name="index">Индекс точки пути</param>
+        /// <returns>Точка пути к базе врага</returns>
+        public Vector3 GetPathToBasePoint(int teamID, int index)
+        {
+            if (teamID == TeamSide.TeamRed)
+            {
+                if (pathToBlueBase.Length > index)
+                {
+                    return pathToBlueBase[index].position;
+                }
+                return baseBluePoint.position;
+            }
+            if (teamID == TeamSide.TeamBlue)
+            {
+                if (pathToRedBase.Length > index)
+                {
+                    return pathToRedBase[index].position;
+                }
                 return baseRedPoint.position;
             }
             return Vector3.zero;

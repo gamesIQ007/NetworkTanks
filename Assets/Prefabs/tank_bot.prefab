@@ -3177,8 +3177,9 @@ MonoBehaviour:
   syncInterval: 0
   behaviourType: 0
   patrolChance: 0.75
-  supportChance: 0.3
-  invaderBaseChance: 0.2
+  supportChance: 0.5
+  invaderBaseChance: 0.1
+  invaderBaseByPathChance: 0.2
   vehicle: {fileID: 4781355605197135620}
   movement: {fileID: 8525807279157023020}
   shooter: {fileID: 3038508681996949755}

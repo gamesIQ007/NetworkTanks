@@ -2148,6 +2148,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseRedPoint: {fileID: 402868552}
   baseBluePoint: {fileID: 6506306}
+  pathToRedBase:
+  - {fileID: 608736062}
+  - {fileID: 224025595}
+  - {fileID: 1757183035}
+  pathToBlueBase:
+  - {fileID: 952250154}
+  - {fileID: 799626575}
+  - {fileID: 591618411}
   fireRedPoints:
   - {fileID: 1532497232}
   - {fileID: 154120630}
@@ -2574,7 +2582,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 799626574}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 92, y: 0, z: 85.5}
+  m_LocalPosition: {x: 86.8, y: 0, z: 124.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3083,7 +3091,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 952250153}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40, y: 0, z: 73.8}
+  m_LocalPosition: {x: -31.4, y: 0, z: 53.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

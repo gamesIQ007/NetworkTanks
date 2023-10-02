@@ -19,7 +19,11 @@ namespace NetworkTanks
         /// <summary>
         /// Захват базы
         /// </summary>
-        InvaderBase
+        InvaderBase,
+        /// <summary>
+        /// Захват базы по указанному пути
+        /// </summary>
+        InvaderBaseByPath
     }
 
     /// <summary>
@@ -47,6 +51,11 @@ namespace NetworkTanks
         /// </summary>
         [Range(0, 1)]
         [SerializeField] private float invaderBaseChance;
+        /// <summary>
+        /// Шанс выбора захвата базы по указанному пути
+        /// </summary>
+        [Range(0, 1)]
+        [SerializeField] private float invaderBaseByPathChance;
 
         /// <summary>
         /// Транспорт
@@ -69,6 +78,10 @@ namespace NetworkTanks
         /// Цель перемещения
         /// </summary>
         private Vector3 movementTarget;
+        /// <summary>
+        /// Индекс точки пути к базе
+        /// </summary>
+        private int indexOfPathToBase;
 
         /// <summary>
         /// Начальное количество членов команды
@@ -135,7 +148,7 @@ namespace NetworkTanks
         /// </summary>
         private void SetStartBehaviour()
         {
-            float chance = Random.Range(0, patrolChance + supportChance + invaderBaseChance);
+            float chance = Random.Range(0, patrolChance + supportChance + invaderBaseChance + invaderBaseByPathChance);
 
             if (chance >= 0.0f && chance <= patrolChance)
             {
@@ -152,6 +165,12 @@ namespace NetworkTanks
             if (chance > patrolChance + supportChance && chance <= patrolChance + supportChance + invaderBaseChance)
             {
                 StartBehaviour(AIBehaviourType.InvaderBase);
+                return;
+            }
+
+            if (chance > patrolChance + supportChance + invaderBaseChance && chance <= patrolChance + supportChance + invaderBaseChance + invaderBaseByPathChance)
+            {
+                StartBehaviour(AIBehaviourType.InvaderBaseByPath);
                 return;
             }
         }
@@ -194,6 +213,11 @@ namespace NetworkTanks
                 movementTarget = AIPath.Instance.GetBasePoint(vehicle.TeamID);
             }
 
+            if (behaviourType == AIBehaviourType.InvaderBaseByPath)
+            {
+                movementTarget = AIPath.Instance.GetPathToBasePoint(vehicle.TeamID, 0);
+            }
+
             if (behaviourType == AIBehaviourType.Patrol)
             {
                 movementTarget = AIPath.Instance.GetRandomPatrolPoint();
@@ -233,6 +257,12 @@ namespace NetworkTanks
             if (behaviourType == AIBehaviourType.Patrol)
             {
                 movementTarget = AIPath.Instance.GetRandomPatrolPoint();
+            }
+
+            if (behaviourType == AIBehaviourType.InvaderBaseByPath)
+            {
+                indexOfPathToBase++;
+                movementTarget = AIPath.Instance.GetPathToBasePoint(vehicle.TeamID, indexOfPathToBase);
             }
 
             movement.ResetPath();

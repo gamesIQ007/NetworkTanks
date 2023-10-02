@@ -32,6 +32,8 @@ namespace NetworkTanks
 
                 if (Physics.Raycast(v.position, v.forward, out hit, raycastDistance))
                 {
+                    if (hit.collider.transform.GetComponent<TeamBase>() != null) return (dist > 0, dist);
+
                     if (dist < 0 || hit.distance < dist)
                     {
                         dist = hit.distance;
