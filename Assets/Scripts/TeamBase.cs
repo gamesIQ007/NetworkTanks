@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace NetworkTanks
 {
@@ -10,6 +11,11 @@ namespace NetworkTanks
     /// </summary>
     public class TeamBase : MonoBehaviour
     {
+        /// <summary>
+        /// Событие захвата базы
+        /// </summary>
+        public event UnityAction BaseCaptured;
+
         /// <summary>
         /// Уровень захвата
         /// </summary>
@@ -68,6 +74,8 @@ namespace NetworkTanks
             v.HitPointChanged += OnHitPointChange;
 
             allVehicles.Add(v);
+
+            BaseCaptured?.Invoke();
         }
 
         private void OnTriggerExit(Collider other)

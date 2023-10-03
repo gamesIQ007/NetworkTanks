@@ -103,6 +103,15 @@ namespace NetworkTanks
 
             CalcTeamMember();
             SetStartBehaviour();
+
+            if (vehicle.TeamID == TeamSide.TeamRed)
+            {
+                AIPath.Instance.BaseRedTeam.BaseCaptured += OnBaseCaptured;
+            }
+            else
+            {
+                AIPath.Instance.BaseBlueTeam.BaseCaptured += OnBaseCaptured;
+            }
         }
 
         private void OnDestroy()
@@ -123,6 +132,28 @@ namespace NetworkTanks
             }
         }
 
+
+        /// <summary>
+        /// При захвате базы
+        /// </summary>
+        private void OnBaseCaptured()
+        {
+            if (Random.Range(0, 100) <= 50)
+            {
+                if (vehicle.TeamID == TeamSide.TeamRed)
+                {
+                    movementTarget = AIPath.Instance.BaseRedTeam.transform.position;
+
+                    movement.ResetPath();
+                }
+                else
+                {
+                    movementTarget = AIPath.Instance.BaseBlueTeam.transform.position;
+
+                    movement.ResetPath();
+                }
+            }
+        }
 
         /// <summary>
         /// При начале матча

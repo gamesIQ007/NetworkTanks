@@ -16,10 +16,13 @@ namespace NetworkTanks
         /// Расположение красной базы
         /// </summary>
         [SerializeField] private Transform baseRedPoint;
+        public TeamBase BaseRedTeam => baseRedPoint.transform.GetComponent<TeamBase>();
+
         /// <summary>
         /// Расположение синей базы
         /// </summary>
         [SerializeField] private Transform baseBluePoint;
+        public TeamBase BaseBlueTeam => baseBluePoint.transform.GetComponent<TeamBase>();
 
         /// <summary>
         /// Путь к красной базе
